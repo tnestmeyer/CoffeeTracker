@@ -18,13 +18,14 @@ h1 {
 }
 
 #topper {
-    width: 600px;
+    width: 750px;
 		margin: 0 auto;
 }
 
 .stats {
     font-size: 2.4em;
 		color: #aaa;
+		margin-left: 80px;
 }
 
 #outer {
@@ -80,6 +81,7 @@ h1 {
     background-color: brown;
 		color: white;
 		border-radius: 10px;
+		width: 520px;
 }
 
 .player.selected .tab {
@@ -97,8 +99,8 @@ h1 {
 .details, .none {
     font-weight: bold;
     font-size: 2.2em;
-    margin: 50px 10px;
-    padding: 10px 0px;
+    margin: 20px 10px;
+    padding: 5px 0px;
 }
 
 .none {
