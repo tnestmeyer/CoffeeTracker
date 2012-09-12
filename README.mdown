@@ -1,0 +1,12 @@
+# Perceiving Systems Coffee Tracker
+
+## What's this then?
+A simple [Meteor](http://www.meteor.com) app to track our group's caffeine consumption. Meteor is UNASHAMEDLY AWESOME and this seemed like an easy way to learn a little and hack on their leaderboard example.
+
+## Usage
+
+* Install Meteor - `curl https://install.meteor.com | /bin/sh`
+* Fork/Clone this project, get in there and start meteor on the port of your choice - `meteor --port 9000`
+* CONSUME ALL THE CAFFEINE
+* Don't forget to click '+1 to tab' when you have CONSUMED
+* When you pay your tab, hit 'clear tab'
