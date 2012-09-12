@@ -1,0 +1,67 @@
+<head>
+  <title>Perceiving Systems Coffee Shot Tracker</title>
+  <link href='http://fonts.googleapis.com/css?family=Imprima' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+	<div id="topper">
+	<h1>Coffee Tracker</h1>
+		{{> stats}}
+	<br>
+	</div>
+  <div id="outer">
+    {{> leaderboard}}
+  </div>
+</body>
+
+<template name="leaderboard">
+  <div class="leaderboard">
+		<div class="player">
+    <span class="title">Connoiseur</span>
+		<span class="totes">Tab</span>
+		<span class="totes">Total</span>
+		</div>
+		<hr>
+    {{#each players}}
+      {{> player}}
+    {{/each}}
+		<br>
+		{{> newplayer}}
+  </div>
+  <hr>
+
+  {{#if selected_name}}
+  <div class="details">
+    <div class="name">{{selected_name}}</div>
+		<br>
+    <input type="button" class="inc btn btn-warning" value="+1 to tab" />
+		<input type="button" class="cleartab btn btn-danger" value="Clear tab" />
+  </div>
+  {{/if}}
+
+  {{#unless selected_name}}
+  <div class="none">Click on a Connoiseur to select</div>
+  {{/unless}}
+</template>
+
+<template name="player">
+  <div class="player {{selected}}">
+    <span class="name">{{name}}</span>
+    <span class="tab">{{tab}}</span>
+		<span class="total">{{total}}</span>
+  </div>
+</template>
+
+<template name="newplayer">
+	<div class="newplayer">
+		<input type="text" id="newplayer" class="input-medium"  placeholder="New Connoiseur" />
+		<input type="button" class="btn btn-small btn-warning add" value="Add" />
+	</div>
+</template>
+
+
+<template name="stats">
+	<div class="stats">
+    <h2>Total shots drunk to date: {{totalshots}}</h2>
+	</div>
+</template>
