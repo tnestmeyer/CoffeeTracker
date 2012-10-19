@@ -59,6 +59,28 @@ h1 {
 	color: #ddd;
 }
 
+.plusbutton {
+  display: inline-block;
+  padding-top: 10px;
+  padding-left: 30px;
+/*General*/
+transform: scale(2);
+/*Firefox*/
+-moz-transform: scale(2);
+/*Microsoft Internet Explorer*/
+-ms-transform: scale(2);
+/*Chrome, Safari*/
+-webkit-transform: scale(2);
+/*Opera*/
+-o-transform: scale(2);
+}
+
+.cleartabbutton {
+  display: inline-block;
+	padding-left: 100px;
+}
+
+
 .player .tab {
     display: inline-block;
     width: 100px;
