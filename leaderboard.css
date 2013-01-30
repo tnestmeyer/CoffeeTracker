@@ -35,9 +35,10 @@ h1 {
 
 .player {
     cursor: pointer;
-    padding: 5px;
-    padding-top: 7px;
+		padding: 1px;
+		padding-top: 6px;
 		margin: 1px;
+		line-height: 16px;
 }
 
 .player .name {
