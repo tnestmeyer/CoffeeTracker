@@ -17,15 +17,27 @@
 
 <template name="leaderboard">
   <div class="leaderboard">
-		<div class="player">
-    <span class="title">Connoiseur</span>
-		<span class="totes">Tab</span>
-		<span class="totes">Total</span>
+		<div class="row">
+			<div class="span4">
+    		<span class="title">Connoisseur</span>
+			</div>
+			<div class="span1">
+					<img src='espresso-icon.png'>
+			</div>
+				<div class="span1">
+					<img src='latte-icon.png'>
+				</div>
+				<div class="span1">
+					<span class="title">Total</span>
+				</div>
+			</div>
 		</div>
 		<hr>
+		<div class="row">
     {{#each players}}
       {{> player}}
     {{/each}}
+		</div>
 		<br>
 		{{> newplayer}}
   </div>
@@ -34,29 +46,37 @@
   {{#if selected_name}}
   <div class="details">
     <div class="name">{{selected_name}}</div>
-		<br>
-    <div class="plusbutton"><input type="button" class="inc btn btn-warning btn-large" value="+1 to tab" /></div>
-		<div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger btn-large" value="Clear tab" /></div>
+    <div class="plusbutton"><input type="button" class="einc btn btn-warning btn-large" value="+1 Espresso to tab" /></div>
+    <div class="plusbutton"><input type="button" class="linc btn btn-large" value="+1 Latte to tab" /></div>
   </div>
   {{/if}}
 
   {{#unless selected_name}}
-  <div class="none">Click on a Connoiseur to select</div>
+  <div class="none">Click on a Connoisseur to select</div>
   {{/unless}}
 </template>
 
 <template name="player">
-  <div class="player {{selected}}">
-    <span class="name">{{name}}</span>
-    <span class="tab">{{tab}}</span>
-		<span class="total">{{total}}</span>
+  <div class="span8 player {{selected}}">
+		<div class="span4">
+    <p class="name">{{name}}</p>
+		</div>
+		<div class="span1">
+    <p class="etab">{{etab}}</p>
+		</div>
+		<div class="span1">
+    <p class="ltab">{{ltab}}</p>
+		</div>
+		<div class="span1">
+		<p class="total">{{total}}</p>
+		</div>
   </div>
 </template>
 
 <template name="newplayer">
 	<div class="newplayer">
-		<input type="text" id="newplayer" class="input-medium"  placeholder="New Connoiseur" />
-		<input type="button" class="btn btn-small btn-warning add" value="Add" />
+		<input type="text" id="newplayer" class="input-medium"  placeholder="New Connoisseur" />
+		<input type="button" class="add btn btn-small btn-warning" value="Add" />
 	</div>
 </template>
 

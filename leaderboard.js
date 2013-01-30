@@ -3,9 +3,9 @@
 
 Players = new Meteor.Collection("players");
 
-if (Meteor.is_client) {
+if (Meteor.isClient) {
   Template.leaderboard.players = function () {
-    return Players.find({}, {sort: {tab: -1, name: 1}});
+    return Players.find({}, {sort: {total: -1, name: 1}});
   };
 
   Template.leaderboard.selected_name = function () {
@@ -29,16 +29,20 @@ if (Meteor.is_client) {
 	Template.newplayer.events = {
 		'click input.add': function () {
 			var newplayer = document.getElementById("newplayer").value;
-      Players.insert({name: newplayer, tab: 0, total: 0});
+      Players.insert({name: newplayer, etab: 0, ltab: 0, total: 0});
 		}
 	};
 
   Template.leaderboard.events = {
-    'click input.inc': function () {
-      Players.update(Session.get("selected_player"), {$inc: {tab: 1, total: 1}});
+    'click input.einc': function () {
+      Players.update(Session.get("selected_player"), {$inc: {etab: 1, total: 1}});
+    },
+		
+    'click input.linc': function () {
+      Players.update(Session.get("selected_player"), {$inc: {ltab: 1, total: 1}});
     },
 		'click input.cleartab': function () {
-			Players.update(Session.get("selected_player"), {$set: {tab: 0}});
+			Players.update(Session.get("selected_player"), {$set: {ltab: 0, etab: 0}});
   	}
   };
 
@@ -65,7 +69,7 @@ if (Meteor.is_server) {
 									 "Abhilash",
 									 "Jonas"];
       for (var i = 0; i < names.length; i++)
-        Players.insert({name: names[i], tab: 0, total: 0});
+        Players.insert({name: names[i], etab: 0, ltab: 0, total: 0});
 		}
   });
 }
