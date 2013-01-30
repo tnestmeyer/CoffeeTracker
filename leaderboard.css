@@ -79,8 +79,7 @@ transform: scale(2);
 }
 
 .cleartabbutton {
-  display: inline-block;
-	padding-left: 260px;
+  display: inline;
 }
 
 

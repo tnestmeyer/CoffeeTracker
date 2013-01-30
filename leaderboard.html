@@ -45,7 +45,9 @@
 
   {{#if selected_name}}
   <div class="details">
-    <div class="name">{{selected_name}}</div>
+    <div class="name">{{selected_name}}
+		<div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
+		<br>
     <div class="plusbutton"><input type="button" class="einc btn btn-warning btn-large" value="+1 Espresso to tab" /></div>
     <div class="plusbutton"><input type="button" class="linc btn btn-large" value="+1 Latte to tab" /></div>
   </div>
@@ -74,9 +76,17 @@
 </template>
 
 <template name="newplayer">
-	<div class="newplayer">
+	<div class="row">
+	<div class="newplayer span3">
 		<input type="text" id="newplayer" class="input-medium"  placeholder="New Connoisseur" />
 		<input type="button" class="add btn btn-small btn-warning" value="Add" />
+	</div>
+	{{#if error}}
+	<div id="error" class="alert span4 bump">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+  	<strong>Warning!</strong> {{error}}.
+	</div>
+	{{/if}}
 	</div>
 </template>
 
