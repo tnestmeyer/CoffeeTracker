@@ -10,3 +10,8 @@ A simple [Meteor](http://www.meteor.com) app to track our group's caffeine consu
 * CONSUME ALL THE CAFFEINE
 * Don't forget to click '+1 to tab' when you have CONSUMED
 * When you pay your tab, hit 'clear tab'
+
+# Things to know
+
+* Best to `meteor add insecure` to let the app update the database
+* Also, add `collectionapi` from [crazytoad's repo](https://github.com/crazytoad/meteor-collectionapi) to make the REST stuff work.

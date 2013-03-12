@@ -110,5 +110,18 @@ if (Meteor.is_server) {
       for (var i = 0; i < names.length; i++)
         Players.insert({name: names[i], etab: 0, ltab: 0, total: 0});
 		}
-  });
+
+    collectionApi = new CollectionAPI({
+      authToken: undefined,              // Require this string to be passed in on each request
+      apiPath: 'rest',				           // API path prefix
+    });
+
+    // Add the collection Players to the API "/players" path
+    collectionApi.addCollection(Players, 'players', {
+      methods: ['GET']  // Allow reading
+    });
+
+    // Starts the API server
+    collectionApi.start();
+    });
 }
