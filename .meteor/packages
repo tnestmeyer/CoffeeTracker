@@ -8,4 +8,5 @@ autopublish
 insecure
 backbone
 bootstrap
-collectionapi
+standard-app-packages
+collection-api

@@ -93,7 +93,7 @@ if (Meteor.isClient) {
 }
 
 // On server startup, create some players if the database is empty.
-if (Meteor.is_server) {
+if (Meteor.isServer) {
   Meteor.startup(function () {
     if (Players.find().count() === 0) {
       var names = ["MJB",
@@ -113,7 +113,7 @@ if (Meteor.is_server) {
 
     collectionApi = new CollectionAPI({
       authToken: undefined,              // Require this string to be passed in on each request
-      apiPath: 'rest',				           // API path prefix
+      apiPath: 'rest'				             // API path prefix
     });
 
     // Add the collection Players to the API "/players" path
