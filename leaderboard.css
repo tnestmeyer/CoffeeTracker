@@ -96,6 +96,12 @@ transform: scale(2);
     color: #777;
 }
 
+.player .ptab {
+    font-size: 2em;
+    font-weight: bold;
+    color: #777;
+}
+
 .player .total {
 		font-size: 2em;
 		font-weight: bold;
@@ -105,6 +111,11 @@ transform: scale(2);
 .player.selected {
     background-color: darkorange;
 		color: white;
+		border-radius: 10px;
+}
+
+.player.notactv {
+		color: grey;
 		border-radius: 10px;
 }
 

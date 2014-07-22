@@ -3,56 +3,134 @@
   <link href='http://fonts.googleapis.com/css?family=Imprima' rel='stylesheet' type='text/css'>
 </head>
 
-<body>
-	<a href="https://github.com/astromoose/CoffeeTracker"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png" alt="Fork me on GitHub"></a>
-	<div id="topper">
-	<h1><img src="espresso.png" width=150px />Coffee Tracker</h1>
-		{{> stats}}
-	<br>
-	</div>
-  	<div id="outer">
-   	 {{> leaderboard}}
-  	</div>
-</body>
+
+
+<template name="Players">
+  {{#contentFor "buttons"}}
+  <br>
+  <div class="plusbutton"><input type="button" class="einc btn btn-warning btn-large" value="+1 Espresso to tab" /></div>
+  <div class="plusbutton"><input type="button" class="linc btn btn-large" value="+1 Latte to tab" /></div>
+  {{/contentFor}}
+  
+  {{#contentFor "playerlist"}}
+  {{#each players_active}}
+  {{> player}}
+  {{/each}}
+  {{/contentFor}}
+
+
+  {{#contentFor "leaderboardHeader"}}
+  <div class="span4">
+    <span class="title">Connoisseur</span>
+  </div>
+  <div class="span1">
+    <img src='espresso-icon.png'>
+  </div>
+  <div class="span1">
+    <img src='latte-icon.png'>
+  </div>
+  <div class="span1">
+    <span class="title">Total</span>
+  </div>
+  {{/contentFor}}
+  
+</template>
+
+<template name="Admin">
+
+  {{#contentFor "adminStats"}}
+  <h2>Value of Coffee Pot: €{{totalsum}}</h2>
+  <h2>Total sum of pre-pay: €{{totalprepay}}</h2>
+  <h2>Total sum of money owed: €{{totalowed}}</h2>
+  {{/contentFor}}
+
+  {{#contentFor "leaderboardHeader"}}
+  <div class="span4">
+    <span class="title">Connoisseur</span>
+  </div>
+  <div class="span1">
+    <img src='espresso-icon.png'>
+  </div>
+  <div class="span1">
+    <img src='latte-icon.png'>
+  </div>
+  <div class="span1">
+    <img src='euro-icon.png'>
+  </div>
+  <div class="span1">
+    <span class="title">Total</span>
+  </div>
+  {{/contentFor}}
+  
+  {{#contentFor "buttons"}}
+  <div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
+  <br>
+  <div class="plusbutton"><input type="button" class="einc btn btn-warning btn-large" value="+1 Espresso to tab" /></div>
+  <div class="plusbutton"><input type="button" class="linc btn btn-large" value="+1 Latte to tab" /></div>
+  <div class="plusbutton"><input type="button" class="pinc btn btn-large" value="+1 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="psub btn btn-large" value="-1 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="actv btn btn-large" value="Toggle Active" /></div>
+  {{/contentFor}}
+
+  {{#contentFor "playerlist"}}
+  {{#each players}}
+  {{> player_admin}}
+  {{/each}}  
+  {{/contentFor}}
+
+
+</template>
+
+
+
+<template name="ApplicationLayout">
+
+  <a href="https://github.com/astromoose/CoffeeTracker"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png" alt="Fork me on GitHub"></a>
+  <div id="topper">
+    <h1><img src="espresso.png" width=150px />Coffee Tracker</h1>
+    {{> stats}}
+    <br>
+  </div>
+  <div id="outer">
+    {{> leaderboard}}
+  </div>
+
+  <article>
+    {{> yield}}
+  </article>
+
+</template>
+
 
 <template name="leaderboard">
   <div class="leaderboard">
-		<div class="row">
-			<div class="span4">
-    		<span class="title">Connoisseur</span>
-			</div>
-			<div class="span1">
-					<img src='espresso-icon.png'>
-			</div>
-				<div class="span1">
-					<img src='latte-icon.png'>
-				</div>
-				<div class="span1">
-					<span class="title">Total</span>
-				</div>
-			</div>
-		</div>
-		<hr>
-		<div class="row">
-    {{#each players}}
-      {{> player}}
-    {{/each}}
-		</div>
-		<br>
-		{{> newplayer}}
+    <div class="row">
+      <leaderboardHeader>
+	{{> yield "leaderboardHeader"}}
+      </leaderboardHeader>
+    </div>
   </div>
   <hr>
+  <div class="row">
+    <playerlist>
+      {{> yield "playerlist"}}
+      </playerlist>
+  </div>
+  <br>
+  {{> newplayer}}
 
+  <hr>
+  
   {{#if selected_name}}
   <div class="details">
-    <div class="name">{{selected_name}}
-		<div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
-		<br>
-    <div class="plusbutton"><input type="button" class="einc btn btn-warning btn-large" value="+1 Espresso to tab" /></div>
-    <div class="plusbutton"><input type="button" class="linc btn btn-large" value="+1 Latte to tab" /></div>
+    <div class="name">{{selected_name}} (€{{selected_tab}})
+      <buttons>
+	{{> yield "buttons"}}
+      </buttons>
+    </div>
   </div>
   {{/if}}
-
+  
   {{#unless selected_name}}
   <div class="none">Click on a Connoisseur to select</div>
   {{/unless}}
@@ -60,20 +138,41 @@
 
 <template name="player">
   <div class="span8 player {{selected}}">
-		<div class="span4">
-    <p class="name">{{name}}</p>
-		</div>
-		<div class="span1">
-    <p class="etab">{{etab}}</p>
-		</div>
-		<div class="span1">
-    <p class="ltab">{{ltab}}</p>
-		</div>
-		<div class="span1">
-		<p class="total">{{total}}</p>
-		</div>
+    <div class="span4">
+      <p class="name">{{name}}</p>
+    </div>
+    <div class="span1">
+      <p class="etab">{{etab}}</p>
+    </div>
+    <div class="span1">
+      <p class="ltab">{{ltab}}</p>
+    </div>
+    <div class="span1">
+      <p class="total">{{total}}</p>
+    </div>
   </div>
 </template>
+
+<template name="player_admin">
+  <div class="span9 player {{selected}} {{notactv}}">
+    <div class="span4">
+      <p class="name">{{name}}</p>
+    </div>
+    <div class="span1">
+      <p class="etab">{{etab}}</p>
+    </div>
+    <div class="span1">
+      <p class="ltab">{{ltab}}</p>
+    </div>
+    <div class="span1">
+      <p class="ptab">{{ptab}}</p>
+    </div>
+    <div class="span1">
+      <p class="total">{{total}}</p>
+    </div>
+  </div>
+</template>
+
 
 <template name="newplayer">
 	<div class="row">
@@ -90,9 +189,12 @@
 	</div>
 </template>
 
-
 <template name="stats">
 	<div class="stats">
-    <h2>Total shots drunk to date: {{totalshots}}</h2>
+	  <h2>Total shots drunk to date: {{totalshots}}</h2>
+
+      <adminStats>
+	{{> yield "adminStats"}}
+      </adminStats>
 	</div>
 </template>
