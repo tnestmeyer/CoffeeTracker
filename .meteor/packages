@@ -10,3 +10,4 @@ backbone
 bootstrap
 standard-app-packages
 collection-api
+iron-router
