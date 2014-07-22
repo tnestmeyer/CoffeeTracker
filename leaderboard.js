@@ -86,7 +86,7 @@ if (Meteor.isClient) {
       var shots = Players.find({});
       var sum = 0;
       shots.forEach(function(Player){
-	      sum += (espresso_price * Player.etab) + (latte_price * Player.ltab);
+	      sum += Math.max( 0, (espresso_price * Player.etab) + (latte_price * Player.ltab) - (prepaid_price * Player.ptab));
 	  });
       return sum.toFixed(2);
   };
