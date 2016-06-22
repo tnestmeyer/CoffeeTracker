@@ -1,4 +1,6 @@
-# Perceiving Systems Coffee Tracker
+# Perceiving Systems Fruit Tracker
+
+This is forked from (https://github.com/astromoose/CoffeeTracker).
 
 ## What's this then?
 A simple [Meteor](http://www.meteor.com) app to track our group's caffeine consumption. Meteor is UNASHAMEDLY AWESOME and this seemed like an easy way to learn a little and hack on their leaderboard example.

@@ -1,5 +1,5 @@
 <head>
-  <title>Perceiving Systems Coffee Shot Tracker</title>
+  <title>Perceiving Systems Fruit Tracker</title>
   <link href='http://fonts.googleapis.com/css?family=Imprima' rel='stylesheet' type='text/css'>
 </head>
 
@@ -11,7 +11,7 @@
   <div class="plusbutton"><input type="button" class="einc btn btn-warning btn-large" value="+1 Espresso to tab" /></div>
   <div class="plusbutton"><input type="button" class="linc btn btn-large" value="+1 Latte to tab" /></div>
   {{/contentFor}}
-  
+
   {{#contentFor "playerlist"}}
   {{#each players_active}}
   {{> player}}
@@ -33,7 +33,7 @@
     <span class="title">Total</span>
   </div>
   {{/contentFor}}
-  
+
 </template>
 
 <template name="Admin">
@@ -61,7 +61,7 @@
     <span class="title">Total</span>
   </div>
   {{/contentFor}}
-  
+
   {{#contentFor "buttons"}}
   <div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
   <br>
@@ -75,7 +75,7 @@
   {{#contentFor "playerlist"}}
   {{#each players}}
   {{> player_admin}}
-  {{/each}}  
+  {{/each}}
   {{/contentFor}}
 
 
@@ -85,9 +85,9 @@
 
 <template name="ApplicationLayout">
 
-  <a href="https://github.com/astromoose/CoffeeTracker"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png" alt="Fork me on GitHub"></a>
+  <a href="https://github.com/tnestmeyer/FruitTracker"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png" alt="Fork me on GitHub"></a>
   <div id="topper">
-    <h1><img src="espresso.png" width=150px />Coffee Tracker</h1>
+    <h1><img src="espresso.png" width=150px />Fruit Tracker</h1>
     {{> stats}}
     <br>
   </div>
@@ -106,7 +106,7 @@
   <div class="leaderboard">
     <div class="row">
       <leaderboardHeader>
-	{{> yield "leaderboardHeader"}}
+        {{> yield "leaderboardHeader"}}
       </leaderboardHeader>
     </div>
   </div>
@@ -120,17 +120,17 @@
   {{> newplayer}}
 
   <hr>
-  
+
   {{#if selected_name}}
   <div class="details">
     <div class="name">{{selected_name}} (€{{selected_tab}})
       <buttons>
-	{{> yield "buttons"}}
+        {{> yield "buttons"}}
       </buttons>
     </div>
   </div>
   {{/if}}
-  
+
   {{#unless selected_name}}
   <div class="none">Click on a Connoisseur to select</div>
   {{/unless}}
@@ -190,11 +190,11 @@
 </template>
 
 <template name="stats">
-	<div class="stats">
-	  <h2>Total shots drunk to date: {{totalshots}}</h2>
+  <div class="stats">
+    <h2>Total fruit eaten to date: {{totalfruit}}</h2>
 
       <adminStats>
-	{{> yield "adminStats"}}
+        {{> yield "adminStats"}}
       </adminStats>
-	</div>
+    </div>
 </template>
