@@ -4,7 +4,7 @@ body {
     font-weight: 200;
     margin: auto;
     padding: 0;
-    background-image:url('grey.png');
+    background-image:url('background.png');
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
@@ -30,7 +30,7 @@ h1 {
 
 #outer {
     width: 700px;
-    margin: 0 auto;    
+    margin: 0 auto;
 }
 
 .player {
@@ -50,7 +50,7 @@ h1 {
 }
 
 .title {
-    color: #ddd;
+    color: #aaa;
     font-size: 2.4em;
 		vertical-align: -60px;
 }

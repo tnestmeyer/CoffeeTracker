@@ -1,7 +1,11 @@
 // Set up a collection to contain player information. On the server,
 // it is backed by a MongoDB collection named "players."
 
+import { Template } from 'meteor/templating';
+// import { CollectionAPI } from 'meteor/xcv58:collection-api';
+
 Players = new Meteor.Collection("players");
+Prices = new Meteor.Collection("prices");
 
 
 Router.configure({
@@ -44,22 +48,26 @@ if (Meteor.isClient) {
       }
     },
     player_exists: function(name) {
+      // console.log('check if player exists')
       return Players.findOne({name: name});
     }
   };
 
-  Template.leaderboard.helpers({
-    players_active: function () {
-        window.alert('test')
-        console.log('test')
-        return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
-    },
+  Pricing = {
+    prices: function () {
+      var prices = {}
+      Prices.find({}).forEach(function(price_for_item){
+        prices[price_for_item.name] = price_for_item.price
+      })
+      // var price_banana = Prices.findOne({'name': 'banana'})['price']
+      // console.log("insice Pricing")
+      // console.log(prices);
+      return prices
+    }
+  };
 
-    players: function () {
-        window.alert('test')
-        console.log('test')
-        return Players.find( {}, {sort: {total: -1, name: 1}});
-    },
+  // Templates should use helpers now
+  Template.leaderboard.helpers({
 
     selected_name: function () {
       var player = Players.findOne(Session.get("selected_player"));
@@ -68,7 +76,7 @@ if (Meteor.isClient) {
 
     selected_tab: function () {
         var player = Players.findOne(Session.get("selected_player"));
-        var tab = (espresso_price * player.etab) + (latte_price * player.ltab) - (prepaid_price * player.ptab);
+        var tab = (espresso_price * player.etab) + (latte_price * player.ltab) - (prepaid_price * player.prepaid);
         return player && tab.toFixed(2);
     },
 
@@ -79,6 +87,25 @@ if (Meteor.isClient) {
           sum += Player.total;
         });
         return sum;
+    },
+
+  });
+
+
+  Template.Players.helpers({
+
+    players_active: function () {
+        // console.log('with helper');
+        return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
+    },
+
+  });
+
+  Template.Admin.helpers({
+
+    players: function () {
+      console.log('Template.Admin.helpers players')
+      return Players.find( {}, {sort: {total: -1, name: 1}});
     },
 
   });
@@ -97,8 +124,12 @@ if (Meteor.isClient) {
     totalsum: function () {
         var fruits = Players.find({});
         var sum = 0;
+        var prices = Pricing.prices()
         fruits.forEach(function(Player){
-          sum += (espresso_price * Player.etab) + (latte_price * Player.ltab) - (prepaid_price * Player.ptab);
+          sum += prices.apple * Player.apples;
+          sum += prices.banana * Player.bananas;
+          sum += prices.kiwi * Player.kiwis;
+          sum -= prepaid_price * Player.prepaid;
         });
         return sum.toFixed(2);
     },
@@ -107,8 +138,8 @@ if (Meteor.isClient) {
         var fruits = Players.find({});
         var sum = 0;
         fruits.forEach(function(Player){
-  	      sum += Math.max( 0, (espresso_price * Player.etab) + (latte_price * Player.ltab) - (prepaid_price * Player.ptab));
-  	  });
+          sum += Math.max( 0, (espresso_price * Player.etab) + (latte_price * Player.ltab) - (prepaid_price * Player.prepaid));
+        });
         return sum.toFixed(2);
     },
 
@@ -116,24 +147,45 @@ if (Meteor.isClient) {
         var fruits = Players.find({});
         var sum = 0;
         fruits.forEach(function(Player){
-          sum += (prepaid_price * Player.ptab);
+          sum += (prepaid_price * Player.prepaid);
         });
         return sum.toFixed(2);
     },
 
   });
 
-  Template.player.selected = function () {
-    return Session.equals("selected_player", this._id) ? "selected" : '';
-  };
 
-  Template.player_admin.selected = function () {
-    return Session.equals("selected_player", this._id) ? "selected" : '';
-  };
+  Template.player.helpers({
+    selected: function () {
+      console.log('Template.player.helpers selected');
+      return Session.equals("selected_player", this._id) ? "selected" : '';
+    },
 
-  Template.player_admin.notactv = function () {
+  });
+
+  Template.player_admin.helpers({
+    players_active: function () {
+      console.log('Template.player_admin.helpers players_active');
+      return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
+    },
+
+    players: function () {
+      console.log('Template.player_admin.helpers players');
+      return Players.find( {}, {sort: {total: -1, name: 1}});
+    },
+
+
+    selected: function () {
+      console.log('Template.player_admin.helpers selected');
+      return Session.equals("selected_player", this._id) ? "selected" : '';
+    },
+
+    notactv: function () {
+      console.log('Template.player_admin.helpers selected');
       return ((this.active % 2)==0)  ? "notactv" : '';
-  };
+    },
+
+  });
 
   Template.newplayer.helpers({
     error: function () {
@@ -146,26 +198,29 @@ if (Meteor.isClient) {
       'click input.add': function () {
         var newplayer = document.getElementById("newplayer").value.trim();
         if (Validation.valid_name(newplayer)) {
-          Players.insert({name: newplayer, etab: 0, ltab: 0, ptab: 0, total: 0, active: 1});
+          Players.insert({name: newplayer, etab: 0, ltab: 0, prepaid: 0, total: 0, active: 1});  // TODO: add all the tabs
         }
       }
   };
 
   Template.leaderboard.events = {
-      'click input.einc': function () {
-        Players.update(Session.get("selected_player"), {$inc: {etab: 1, total: 1}});
+      'click input.inc_apple': function () {
+        Players.update(Session.get("selected_player"), {$inc: {apples: 1, total: 1}});
       },
-      'click input.linc': function () {
-        Players.update(Session.get("selected_player"), {$inc: {ltab: 1, total: 1}});
+      'click input.inc_banana': function () {
+        Players.update(Session.get("selected_player"), {$inc: {bananas: 1, total: 1}});
       },
-      'click input.pinc': function () {
-        Players.update(Session.get("selected_player"), {$inc: {ptab: 1, total: 0}});
+      'click input.inc_kiwi': function () {
+        Players.update(Session.get("selected_player"), {$inc: {kiwis: 1, total: 1}});
       },
-      'click input.psub': function () {
-        Players.update(Session.get("selected_player"), {$inc: {ptab: -1, total: 0}});
+      'click input.inc_prepaid': function () {
+        Players.update(Session.get("selected_player"), {$inc: {prepaid: 1, total: 0}});
+      },
+      'click input.dec_prepaid': function () {
+        Players.update(Session.get("selected_player"), {$inc: {prepaid: -1, total: 0}});
       },
       'click input.cleartab': function () {
-        Players.update(Session.get("selected_player"), {$set: {ltab: 0, etab: 0, ptab: 0}});
+        Players.update(Session.get("selected_player"), {$set: {ltab: 0, etab: 0, prepaid: 0}});
       },
       'click input.actv': function () {
         Players.update(Session.get("selected_player"), {$inc: {active: 1}})
@@ -183,50 +238,5 @@ if (Meteor.isClient) {
         Session.set("selected_player", this._id);
       }
   };
-}
 
-// On server startup, create some players if the database is empty.
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    if (Players.find().count() === 0) {
-      var names = ["MJB",
-                   "Peter",
-                   "Andreas G.",
-                   "Jon",
-                   "Javier",
-                   "Naureen",
-                   "Jonas",
-                   "Thomas N.",
-                 ];
-      for (var i = 0; i < names.length; i++)
-        Players.insert(
-          {name: names[i], etab: 0, ltab: 0, ptab: 0, active: 1, total: 0}
-        );
-    }
-
-/*
-    collectionApi = new CollectionAPI({
-      authToken: undefined,              // Require this string to be passed in on each request
-      apiPath: 'rest'                    // API path prefix
-    });
-
-    // Add the collection Players to the API "/players" path
-    collectionApi.addCollection(Players, 'players', {
-      methods: ['GET']  // Allow reading
-    });
-
-    // Starts the API server
-    collectionApi.start();
-*/
-
-
-    // Meteor.publish("widgets-above-index", function (index) {
-    //   return Widgets.find({index: {$gt: parseInt(index, 10)}});
-    // }, {
-    //   url: "widgets-with-index-above/:0",
-    //   httpMethod: "post"
-    // });
-
-
-    });
 }
