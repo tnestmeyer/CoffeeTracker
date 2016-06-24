@@ -84,19 +84,25 @@ transform: scale(2);
 }
 
 
-.player .etab {
+.player .tab_apples {
     font-size: 2em;
     font-weight: bold;
     color: #777;
 }
 
-.player .ltab {
+.player .tab_bananas {
     font-size: 2em;
     font-weight: bold;
     color: #777;
 }
 
-.player .ptab {
+.player .tab_kiwis {
+    font-size: 2em;
+    font-weight: bold;
+    color: #777;
+}
+
+.player .tab_prepaid {
     font-size: 2em;
     font-weight: bold;
     color: #777;

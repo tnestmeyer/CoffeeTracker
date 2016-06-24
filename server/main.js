@@ -11,8 +11,10 @@ Meteor.startup(function () {
                ];
     for (var i = 0; i < names.length; i++)
       Players.insert(
-        {name: names[i], active: 1, total: 0}  // TODO: add all the open tabs
+        {name: names[i], prepaid: 0, active: 1, total: 0}
       );
+      // TODO: add all the open tabs. It works without, but shows empty instead
+      // of 0 for those fruits
   };
 
   if (Prices.find().count() === 0) {

@@ -48,6 +48,9 @@
     <img src='bananas-03.jpg'>
   </div>
   <div class="span1">
+    <img src='kiwi.jpg'>
+  </div>
+  <div class="span1">
     <span class="title">Total</span>
   </div>
   {{/contentFor}}
@@ -71,6 +74,9 @@
   </div>
   <div class="span1">
     <img src='bananas-03.jpg'>
+  </div>
+  <div class="span1">
+    <img src='kiwi.jpg'>
   </div>
   <div class="span1">
     <img src='euro-coin.png'>
@@ -134,18 +140,18 @@
 
 
 <template name="player">
-  <div class="span8 player {{selected}}">
+  <div class="span10 player {{selected}}">
     <div class="span4">
       <p class="name">{{name}}</p>
     </div>
     <div class="span1">
-      <p class="etab">{{apples}}</p>
+      <p class="tab_apples">{{apples}}</p>
     </div>
     <div class="span1">
-      <p class="ltab">{{bananas}}</p>
+      <p class="tab_bananas">{{bananas}}</p>
     </div>
     <div class="span1">
-      <p class="ltab">{{kiwis}}</p>
+      <p class="tab_kiwis">{{kiwis}}</p>
     </div>
     <div class="span1">
       <p class="total">{{total}}</p>
@@ -154,21 +160,21 @@
 </template>
 
 <template name="player_admin">
-  <div class="span9 player {{selected}} {{notactv}}">
+  <div class="span10 player {{selected}} {{notactv}}">
     <div class="span4">
       <p class="name">{{name}}</p>
     </div>
     <div class="span1">
-      <p class="etab">{{apples}}</p>
+      <p class="tab_apples">{{apples}}</p>
     </div>
     <div class="span1">
-      <p class="ltab">{{bananas}}</p>
+      <p class="tab_bananas">{{bananas}}</p>
     </div>
     <div class="span1">
-      <p class="ltab">{{kiwis}}</p>
+      <p class="tab_kiwis">{{kiwis}}</p>
     </div>
     <div class="span1">
-      <p class="ptab">{{prepaid}}</p>
+      <p class="tab_prepaid">{{prepaid}}</p>
     </div>
     <div class="span1">
       <p class="total">{{total}}</p>
