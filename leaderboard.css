@@ -19,13 +19,14 @@ h1 {
 
 #topper {
     width: 750px;
-		margin: 0 auto;
+    /*margin: 10 auto;*/
+    text-align: center
 }
 
 .stats {
     font-size: 2.4em;
-		color: #aaa;
-		margin-left: 80px;
+    color: #aaa;
+    margin-left: 80px;
 }
 
 #outer {
@@ -35,10 +36,10 @@ h1 {
 
 .player {
     cursor: pointer;
-		padding: 1px;
-		padding-top: 6px;
-		margin: 1px;
-		line-height: 16px;
+    padding: 1px;
+    padding-top: 6px;
+    margin: 1px;
+    line-height: 16px;
 }
 
 .player .name {
@@ -52,35 +53,35 @@ h1 {
 .title {
     color: #aaa;
     font-size: 2.4em;
-		vertical-align: -60px;
+    vertical-align: -60px;
 }
 
 .totes {
-	font-size: 1.6em;
-	color: #ddd;
+    font-size: 1.6em;
+    color: #ddd;
 }
 
 .leaderboard img {
-	vertical-align: baseline;
+    vertical-align: baseline;
 }
 
 .plusbutton {
-  display: inline-block;
-  margin: 80px;
-/*General*/
-transform: scale(2);
-/*Firefox*/
--moz-transform: scale(2);
-/*Microsoft Internet Explorer*/
--ms-transform: scale(2);
-/*Chrome, Safari*/
--webkit-transform: scale(2);
-/*Opera*/
--o-transform: scale(2);
+    display: inline-block;
+    margin: 80px;
+    /*General*/
+    transform: scale(2);
+    /*Firefox*/
+    -moz-transform: scale(2);
+    /*Microsoft Internet Explorer*/
+    -ms-transform: scale(2);
+    /*Chrome, Safari*/
+    -webkit-transform: scale(2);
+    /*Opera*/
+    -o-transform: scale(2);
 }
 
 .cleartabbutton {
-  display: inline;
+    display: inline;
 }
 
 
@@ -109,20 +110,20 @@ transform: scale(2);
 }
 
 .player .total {
-		font-size: 2em;
-		font-weight: bold;
-		color: #333;
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
 }
 
 .player.selected {
     background-color: darkorange;
-		color: white;
-		border-radius: 10px;
+    color: white;
+    border-radius: 10px;
 }
 
 .player.notactv {
-		color: grey;
-		border-radius: 10px;
+    color: grey;
+    border-radius: 10px;
 }
 
 .player.selected .tab {
@@ -130,11 +131,11 @@ transform: scale(2);
 }
 
 .player.selected .total {
-		color: black;
+    color: black;
 }
 
 #newplayer {
-	  margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 .details, .none {
@@ -147,9 +148,9 @@ transform: scale(2);
 }
 
 .inc {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .cleartab {
-  cursor: pointer;
+    cursor: pointer;
 }
