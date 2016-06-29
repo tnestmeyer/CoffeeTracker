@@ -20,10 +20,6 @@ Router.map(function() {
 
 
 
-
-
-espresso_price = 0.25
-latte_price = 0.35
 prepaid_price = 1.0
 
 if (Meteor.isClient) {
@@ -78,30 +74,19 @@ if (Meteor.isClient) {
     },
   };
 
-  // Templates should use helpers now
+  // helpers (Templates should use helpers now)
   Template.leaderboard.helpers({
     selected_name: function () {
-      console.log('Template.leaderboard.helpers selected_name was called');
+      // console.log('Template.leaderboard.helpers selected_name was called');
       var player = Players.findOne(Session.get("selected_player"));
       return player && player.name;
     },
 
     selected_tab: function () {
-      console.log('Template.leaderboard.helpers selected_tab was called');
+      // console.log('Template.leaderboard.helpers selected_tab was called');
         var player = Players.findOne(Session.get("selected_player"));
         var tab = Pricing.player_tab(player);
         return player && tab.toFixed(2);
-    },
-
-    totalfruit: function () {
-      console.log('Template.leaderboard.helpers totalfruit');
-      console.log('THIS SEEMS NEVER TO BE CALLED, USED FROM STATS, TO BE DELETED');
-      var fruits = Players.find({});
-      var sum = 0;
-      fruits.forEach(function(Player){
-        sum += Player.total;
-      });
-      return sum;
     },
 
   });
@@ -109,7 +94,7 @@ if (Meteor.isClient) {
 
   Template.Players.helpers({
     players_active: function () {
-      console.log('Template.Players.helpers players_active was called');
+      // console.log('Template.Players.helpers players_active was called');
       return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
     },
 
@@ -117,27 +102,12 @@ if (Meteor.isClient) {
 
   Template.Admin.helpers({
     players: function () {
-      console.log('Template.Admin.helpers players was called');
+      // console.log('Template.Admin.helpers players was called');
       return Players.find( {}, {sort: {total: -1, name: 1}});
     },
 
-  });
-
-
-  Template.stats.helpers({
-    totalfruit: function () {
-      console.log('Template.stats.helpers totalfruit was called');
-      var fruits = Players.find({});
-      var sum = 0;
-      fruits.forEach(function(Player){
-        sum += Player.total;
-      });
-      return sum;
-    },
-
     totalsum: function () {
-      console.log('Template.stats.helpers totalsum');
-      console.log('THIS SEEMS NEVER TO BE CALLED, TO BE DELETED');
+      // console.log('Template.Admin.helpers totalsum');
       var all_players = Players.find({});
       var sum = 0;
       var prices = Pricing.prices();
@@ -147,26 +117,38 @@ if (Meteor.isClient) {
       return sum.toFixed(2);
     },
 
-    totalowed: function () {
-      console.log('Template.stats.helpers totalowed');
-      console.log('THIS SEEMS NEVER TO BE CALLED, TO BE DELETED');
-      var fruits = Players.find({});
+    totalprepay: function () {
+      // console.log('Template.Admin.helpers totalprepay');
+      var all_players = Players.find({});
       var sum = 0;
-      fruits.forEach(function(Player){
+      all_players.forEach(function(Player){
+        sum += (prepaid_price * Player.prepaid);
+      });
+      return sum.toFixed(2);
+    },
+
+    totalowed: function () {
+      // console.log('Template.Admin.helpers totalowed');
+      var all_players = Players.find({});
+      var sum = 0;
+      all_players.forEach(function(Player){
         sum += Math.max( 0, Pricing.player_tab(Player));
       });
       return sum.toFixed(2);
     },
 
-    totalprepay: function () {
-      console.log('Template.stats.helpers totalprepay');
-      console.log('THIS SEEMS NEVER TO BE CALLED, TO BE DELETED');
-      var fruits = Players.find({});
+  });
+
+
+  Template.stats.helpers({
+    totalfruit: function () {
+      // console.log('Template.stats.helpers totalfruit was called');
+      var all_players = Players.find({});
       var sum = 0;
-      fruits.forEach(function(Player){
-        sum += (prepaid_price * Player.prepaid);
+      all_players.forEach(function(Player){
+        sum += Player.total;
       });
-      return sum.toFixed(2);
+      return sum;
     },
 
   });
@@ -174,33 +156,21 @@ if (Meteor.isClient) {
 
   Template.player.helpers({
     selected: function () {
-      console.log('Template.player.helpers selected was called');
+      // console.log('Template.player.helpers selected was called');
       return Session.equals("selected_player", this._id) ? "selected" : '';
     },
 
   });
 
   Template.player_admin.helpers({
-    players_active: function () {
-      console.log('Template.player_admin.helpers players_active');
-      console.log('THIS SEEMS NEVER TO BE CALLED, TO BE DELETED');
-      return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
-    },
-
-    players: function () {
-      console.log('Template.player_admin.helpers players');
-      console.log('THIS SEEMS NEVER TO BE CALLED, TO BE DELETED');
-      return Players.find( {}, {sort: {total: -1, name: 1}});
-    },
-
 
     selected: function () {
-      console.log('Template.player_admin.helpers selected was called');
+      // console.log('Template.player_admin.helpers selected was called');
       return Session.equals("selected_player", this._id) ? "selected" : '';
     },
 
     notactv: function () {
-      console.log('Template.player_admin.helpers selected was called');
+      // console.log('Template.player_admin.helpers notactv was called');
       return ((this.active % 2)==0)  ? "notactv" : '';
     },
 
@@ -208,12 +178,13 @@ if (Meteor.isClient) {
 
   Template.newplayer.helpers({
     error: function () {
-      console.log('Template.newplayer.helpers error was called')
+      // console.log('Template.newplayer.helpers error was called')
       return Session.get("error");
     },
 
   });
 
+  // events
   Template.newplayer.events = {
     'click input.add': function () {
       var newplayer = document.getElementById("newplayer").value.trim();

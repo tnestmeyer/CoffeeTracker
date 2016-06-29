@@ -7,7 +7,7 @@
 
   <a href="https://github.com/tnestmeyer/FruitTracker"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png" alt="Fork me on GitHub"></a>
   <div id="topper">
-    <h1><img src="euro-coin.png" width=150px />Fruit Tracker</h1>
+    <h1><center><img src="favicon_fruits.png" width=96px />Fruit Tracker</center></h1>
     {{> stats}}
     <br>
   </div>
@@ -42,13 +42,13 @@
     <span class="title">Frugivore</span>
   </div>
   <div class="span1">
-    <img src='apple-7.jpg'>
+    <img src='fruit_apple.jpg'>
   </div>
   <div class="span1">
-    <img src='bananas-03.jpg'>
+    <img src='fruit_banana.jpg'>
   </div>
   <div class="span1">
-    <img src='kiwi.jpg'>
+    <img src='fruit_kiwi.jpg'>
   </div>
   <div class="span1">
     <span class="title">Total</span>
@@ -60,7 +60,7 @@
 <template name="Admin">
 
   {{#contentFor "adminStats"}}
-  <h2>Value of Coffee Pot: €{{totalsum}}</h2>
+  <h2>Value of Fruit Pot: €{{totalsum}}</h2>
   <h2>Total sum of pre-pay: €{{totalprepay}}</h2>
   <h2>Total sum of money owed: €{{totalowed}}</h2>
   {{/contentFor}}
@@ -70,13 +70,13 @@
     <span class="title">Frugivore</span>
   </div>
   <div class="span1">
-    <img src='apple-7.jpg'>
+    <img src='fruit_apple.jpg'>
   </div>
   <div class="span1">
-    <img src='bananas-03.jpg'>
+    <img src='fruit_banana.jpg'>
   </div>
   <div class="span1">
-    <img src='kiwi.jpg'>
+    <img src='fruit_kiwi.jpg'>
   </div>
   <div class="span1">
     <img src='euro-coin.png'>
@@ -88,9 +88,9 @@
 
   {{#contentFor "buttons"}}
   <div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
+  <div class="plusbutton"><input type="button" class="actv btn btn-large" value="Toggle Active" /></div>
   <div class="plusbutton"><input type="button" class="inc_prepaid btn btn-large" value="+1 Euro Pre-Paid" /></div>
   <div class="plusbutton"><input type="button" class="dec_prepaid btn btn-large" value="-1 Euro Pre-Paid" /></div>
-  <div class="plusbutton"><input type="button" class="actv btn btn-large" value="Toggle Active" /></div>
   {{/contentFor}}
 
   {{#contentFor "playerlist"}}
@@ -200,7 +200,7 @@
 
 <template name="stats">
   <div class="stats">
-    <h2>Total fruit eaten to date: {{totalfruit}}</h2>
+    <h2><center>Total fruit eaten to date: {{totalfruit}}</center></h2>
 
       <adminStats>
         {{> yield "adminStats"}}
