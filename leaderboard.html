@@ -24,16 +24,6 @@
 
 <template name="Players">
   {{#contentFor "buttons"}}
-  <!-- <br>
-  <div class="plusbutton"><input type="button" class="span2 inc_apricot btn btn-large" value="Apricot" /> <img src='fruit_apricots.jpg' width=100> </div>
-  <br>
-  <div class="plusbutton"><input type="button" class="span2 inc_apple btn btn-large" value="Apple" /> <img src='fruit_apple.jpg' width=100> </div>
-  <br>
-  <div class="plusbutton"><input type="button" class="span2 inc_banana btn btn-large" value="Banana" /> <img src='fruit_bananas.jpg' width=100> </div>
-  <br>
-  <div class="plusbutton"><input type="button" class="span2 inc_kiwi btn btn-large" value="Kiwi" /> <img src='fruit_kiwis.jpg' width=100> </div>
-  <br>
-  <div class="plusbutton"><input type="button" class="span2 inc_nectarine btn btn-large" value="Nectarine" /> <img src='fruit_nectarines.jpg' width=100> </div> -->
 
   {{#each fruits}}
   {{> fruit}}
@@ -65,37 +55,34 @@
   {{/contentFor}}
 
   {{#contentFor "adminStats"}}
-  <h2>Value of Fruit Pot: €{{totalsum}}</h2>
+  <h2>Value of Fruit Pot (open): €{{totalsum}}</h2>
   <h2>Total sum of pre-pay: €{{totalprepay}}</h2>
   <h2>Total sum of money owed: €{{totalowed}}</h2>
   {{/contentFor}}
 
   {{#contentFor "leaderboardHeader"}}
-  <div class="span4">
+  <div class="span2">
     <span class="title">Frugivore</span>
   </div>
-  <!-- <div class="span1">
-    <img src='fruit_apple.jpg'>
-  </div>
   <div class="span1">
-    <img src='fruit_banana.jpg'>
-  </div>
-  <div class="span1">
-    <img src='fruit_kiwi.jpg'>
-  </div>
-  <div class="span1">
-    <img src='euro-coin.png'>
-  </div> -->
-  <div class="span2">
     <span class="title">Total</span>
+  </div>
+  <div class="span1">
+    <span class="title">Prep.</span>
+  </div>
+  <div class="span5">
+    <span class="title">Fruit (order see above)</span>
   </div>
   {{/contentFor}}
 
   {{#contentFor "buttons"}}
+  <br>
   <div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
   <div class="plusbutton"><input type="button" class="actv btn btn-large" value="Toggle Active" /></div>
-  <div class="plusbutton"><input type="button" class="inc_prepaid btn btn-large" value="+1 Euro Pre-Paid" /></div>
-  <div class="plusbutton"><input type="button" class="dec_prepaid btn btn-large" value="-1 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="inc_prepaid_val1 btn btn-large" value="+1 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="dec_prepaid_val1 btn btn-large" value="-1 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="inc_prepaid_val2 btn btn-large" value="+5 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="dec_prepaid_val2 btn btn-large" value="-5 Euro Pre-Paid" /></div>
   {{/contentFor}}
 
   {{#contentFor "playerlist"}}
@@ -146,26 +133,17 @@
 
 <template name="fruit">
   <br>
-  <!-- <div class="plusbutton"><input type="button" class="span3 inc_{{name}} btn btn-large" value="{{name}} (€{{price}})" /> <img src='fruit_{{name}}.jpg' width=100> </div> -->
-  <!-- <div class="plusbutton"><input type="button" class="span3 inc_{{name}} btn btn-large" value="{{name}}" /> <img src='fruit_{{name}}.jpg' width=100> </div> -->
-  <div class="plusbutton"><input type="button" class="span3 inc_fruit btn btn-large" value="{{name}}"/> <img src='fruit_{{name}}.jpg' width=100> </div>
+  <!-- showing the name of the fruit without the price -->
+  <!-- <div class="plusbutton"><input type="button" class="span3 inc_fruit btn btn-large" value="{{name}}"/> <img src='fruit_{{name}}.jpg' width=100> </div> -->
+  <!-- showing also the price -->
+  <div class="plusbutton"><input type="button" class="span3 inc_fruit btn btn-large" value="{{name}} (€{{formatted_price price}})"/> <img src='fruit_{{name}}.jpg' width=100> </div>
 </template>
-
 
 <template name="player">
   <div class="span10 player {{selected}}">
     <div class="span4">
       <p class="name">{{name}}</p>
     </div>
-    <!-- <div class="span1">
-      <p class="tab_apples">{{apples}}</p>
-    </div>
-    <div class="span1">
-      <p class="tab_bananas">{{bananas}}</p>
-    </div>
-    <div class="span1">
-      <p class="tab_kiwis">{{kiwis}}</p>
-    </div> -->
     <div class="span1">
       <p class="total">{{total}}</p>
     </div>
@@ -173,30 +151,30 @@
 </template>
 
 <template name="player_admin">
-  <div class="span10 player {{selected}} {{notactv}}">
-    <div class="span3">
+  <div class="span11 player {{selected}} {{notactv}}">
+    <div class="span2">
       <p class="name">{{name}}</p>
     </div>
     <div class="span1">
-      <p class="tab_apples">{{Apple}}</p>
-    </div>
-    <div class="span1">
-      <p class="tab_apples">{{Apricot}}</p>
-    </div>
-    <div class="span1">
-      <p class="tab_bananas">{{Banana}}</p>
-    </div>
-    <div class="span1">
-      <p class="tab_kiwis">{{Kiwi}}</p>
-    </div>
-    <div class="span1">
-      <p class="tab_kiwis">{{Nectarine}}</p>
+      <p class="total">{{total}}</p>
     </div>
     <div class="span1">
       <p class="tab_prepaid">{{prepaid}}</p>
     </div>
-    <div class="span2">
-      <p class="total">{{total}}</p>
+    <div class="span1">
+      <p class="tab_fruit">{{Apple}}</p>
+    </div>
+    <div class="span1">
+      <p class="tab_fruit">{{Apricot}}</p>
+    </div>
+    <div class="span1">
+      <p class="tab_fruit">{{Banana}}</p>
+    </div>
+    <div class="span1">
+      <p class="tab_fruit">{{Kiwi}}</p>
+    </div>
+    <div class="span1">
+      <p class="tab_fruit">{{Nectarine}}</p>
     </div>
   </div>
 </template>

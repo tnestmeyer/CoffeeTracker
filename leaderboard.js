@@ -50,14 +50,6 @@ if (Meteor.isClient) {
   };
 
   Pricing = {
-    // prices: function () {
-    //   var prices = {}
-    //   Prices.find({}).forEach(function(fruit_item){
-    //     prices[fruit_item.name] = fruit_item.price
-    //   })
-    //   return prices;
-    // },
-
     player_tab: function(Player) {
       var sum = -prepaid_price * Player.prepaid;
       Fruits.find({}).forEach(function(fruit_item){
@@ -199,7 +191,15 @@ if (Meteor.isClient) {
     'click input.add': function () {
       var newplayer = document.getElementById("newplayer").value.trim();
       if (Validation.valid_name(newplayer)) {
-        Players.insert({name: newplayer, prepaid: 0, total: 0, active: 1});  // TODO: add all the tabs
+        // set the main fields
+        var entry = {name: newplayer, prepaid: 0, total: 0, active: 1};
+        // set all fruits to 0
+        var all_fruits = Fruits.find({});
+        all_fruits.forEach(function(fruit_item){
+          entry[fruit_item.name] = 0;
+        });
+        Players.insert(entry);
+        // choose the newly added person as the selected player
         Session.set("selected_player", Players.findOne({name: newplayer})["_id"]);
       }
     }
@@ -221,14 +221,20 @@ if (Meteor.isClient) {
       Players.update(Session.get("selected_player"), {$inc: dict});
     },
 
-    'click input.inc_prepaid': function () {
+    'click input.inc_prepaid_val1': function () {
       Players.update(Session.get("selected_player"), {$inc: {prepaid: 1, total: 0}});
     },
-    'click input.dec_prepaid': function () {
+    'click input.dec_prepaid_val1': function () {
       Players.update(Session.get("selected_player"), {$inc: {prepaid: -1, total: 0}});
     },
+    'click input.inc_prepaid_val2': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: 5, total: 0}});
+    },
+    'click input.dec_prepaid_val2': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: -5, total: 0}});
+    },
     'click input.cleartab': function () {
-      console.log('clear tab called')
+      // console.log('clear tab called')
       var change_entry = {prepaid: 0};
       // set all fruits to 0
       var all_fruits = Fruits.find({});
@@ -254,5 +260,13 @@ if (Meteor.isClient) {
         Session.set("selected_player", this._id);
       }
   };
+
+  Template.fruit.helpers({
+    formatted_price: function (price) {
+      // console.log('Template.fruit.helpers formatted_price was called');
+      return price.toFixed(2);
+    },
+
+  });
 
 }
