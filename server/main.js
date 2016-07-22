@@ -1,4 +1,12 @@
 Meteor.startup(function () {
+  if (Fruits.find().count() === 0) {
+    Fruits.insert({name: 'Apple', price: 0.50});
+    Fruits.insert({name: 'Apricot', price: 0.50});
+    Fruits.insert({name: 'Banana', price: 0.65});
+    Fruits.insert({name: 'Kiwi', price: 0.75});
+    Fruits.insert({name: 'Nectarine', price: 0.50});
+  };
+
   if (Players.find().count() === 0) {
     var names = ["MJB",
                  "Peter",
@@ -8,35 +16,23 @@ Meteor.startup(function () {
                  "Naureen",
                  "Jonas",
                  "Thomas N.",
+                 "Laura",
                ];
-    for (var i = 0; i < names.length; i++)
-      Players.insert(
-        {name: names[i], prepaid: 0, active: 1, total: 0}
-      );
-      // TODO: add all the open tabs. It works without, but shows empty instead
-      // of 0 for those fruits
+
+
+    for (var i = 0; i < names.length; i++) {
+
+      // add the main entries
+      var player_entry = {name: names[i], prepaid: 0, active: 1, total: 0};
+
+      // add the fruit counts
+      var all_fruits = Fruits.find({});
+      all_fruits.forEach(function(fruit_item){
+        player_entry[fruit_item.name] = 0;
+      });
+
+      // finally add the entry to the DB
+      Players.insert(player_entry);
+    };
   };
-
-  if (Prices.find().count() === 0) {
-    Prices.insert({name: 'apple', price: 0.50});
-    Prices.insert({name: 'banana', price: 0.45});
-    Prices.insert({name: 'kiwi', price: 0.60});
-  }
-
-// collectionAPI seems not to be needed?!
-
-  // collectionApi = new CollectionAPI({
-  //   authToken: undefined,              // Require this string to be passed in on each request
-  //   apiPath: 'rest'                    // API path prefix
-  // });
-  //
-  // // Add the collection Players to the API "/players" path
-  // collectionApi.addCollection(Players, 'players', {
-  //   methods: ['GET']  // Allow reading
-  // });
-  //
-  // // Starts the API server
-  // collectionApi.start();
-
-
-  });
+});

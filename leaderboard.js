@@ -5,7 +5,7 @@ import { Template } from 'meteor/templating';
 // import { CollectionAPI } from 'meteor/xcv58:collection-api';
 
 Players = new Meteor.Collection("players");
-Prices = new Meteor.Collection("prices");
+Fruits = new Meteor.Collection("fruits");
 
 
 Router.configure({
@@ -50,26 +50,22 @@ if (Meteor.isClient) {
   };
 
   Pricing = {
-    prices: function () {
-      var prices = {}
-      Prices.find({}).forEach(function(price_for_item){
-        prices[price_for_item.name] = price_for_item.price
-      })
-      // var price_banana = Prices.findOne({'name': 'banana'})['price']
-      // console.log("insice Pricing")
-      // console.log(prices);
-      return prices;
-    },
+    // prices: function () {
+    //   var prices = {}
+    //   Prices.find({}).forEach(function(fruit_item){
+    //     prices[fruit_item.name] = fruit_item.price
+    //   })
+    //   return prices;
+    // },
 
     player_tab: function(Player) {
-      var prices = Pricing.prices()
       var sum = -prepaid_price * Player.prepaid;
-      if (Player.apples)
-        sum += prices.apple * Player.apples;
-      if (Player.bananas)
-        sum += prices.banana * Player.bananas;
-      if (Player.kiwis)
-        sum += prices.kiwi * Player.kiwis;
+      Fruits.find({}).forEach(function(fruit_item){
+        amount = Player[fruit_item.name];
+        if (amount)
+          sum += fruit_item.price * amount;
+        // sum += fruit_item.price * amount;
+      })
       return sum;
     },
   };
@@ -84,9 +80,9 @@ if (Meteor.isClient) {
 
     selected_tab: function () {
       // console.log('Template.leaderboard.helpers selected_tab was called');
-        var player = Players.findOne(Session.get("selected_player"));
-        var tab = Pricing.player_tab(player);
-        return player && tab.toFixed(2);
+      var player = Players.findOne(Session.get("selected_player"));
+      var tab = Pricing.player_tab(player);
+      return player && tab.toFixed(2);
     },
 
   });
@@ -96,6 +92,11 @@ if (Meteor.isClient) {
     players_active: function () {
       // console.log('Template.Players.helpers players_active was called');
       return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
+    },
+
+    fruits: function () {
+      // console.log('Template.Players.helpers fruits was called');
+      return Fruits.find();
     },
 
   });
@@ -110,7 +111,6 @@ if (Meteor.isClient) {
       // console.log('Template.Admin.helpers totalsum');
       var all_players = Players.find({});
       var sum = 0;
-      var prices = Pricing.prices();
       all_players.forEach(function(Player){
         sum += Pricing.player_tab(Player)
       });
@@ -135,6 +135,16 @@ if (Meteor.isClient) {
         sum += Math.max( 0, Pricing.player_tab(Player));
       });
       return sum.toFixed(2);
+    },
+
+    fruit_prices: function () {
+      // console.log('Template.Admin.helpers fruit_prices');
+      var all_fruits = Fruits.find({});
+      var s = "";
+      all_fruits.forEach(function(fruit_item){
+        s += fruit_item.name + " " + fruit_item.price + "   ";
+      });
+      return s;
     },
 
   });
@@ -196,15 +206,21 @@ if (Meteor.isClient) {
   };
 
   Template.leaderboard.events = {
-    'click input.inc_apple': function () {
-      Players.update(Session.get("selected_player"), {$inc: {apples: 1, total: 1}});
+    'click input.inc_fruit': function (event) {
+      var fruit_item = event['target'].value.split(" ")[0]
+      // console.log('inc_fruit called with')
+      // console.log(fruit_item)
+
+      // does not work like the following since it assumes fruit_item to be the name, not the content of the variable
+      // Players.update(Session.get("selected_player"), {$inc: {fruit_item: 1, total: 1}});
+
+      // but works by explicitly creating the dictionary
+      dict = {"total": 1}
+      dict[fruit_item] = 1
+      // console.log(dict)
+      Players.update(Session.get("selected_player"), {$inc: dict});
     },
-    'click input.inc_banana': function () {
-      Players.update(Session.get("selected_player"), {$inc: {bananas: 1, total: 1}});
-    },
-    'click input.inc_kiwi': function () {
-      Players.update(Session.get("selected_player"), {$inc: {kiwis: 1, total: 1}});
-    },
+
     'click input.inc_prepaid': function () {
       Players.update(Session.get("selected_player"), {$inc: {prepaid: 1, total: 0}});
     },
@@ -212,7 +228,15 @@ if (Meteor.isClient) {
       Players.update(Session.get("selected_player"), {$inc: {prepaid: -1, total: 0}});
     },
     'click input.cleartab': function () {
-      Players.update(Session.get("selected_player"), {$set: {apples: 0, bananas: 0, kiwis: 0, prepaid: 0}});
+      console.log('clear tab called')
+      var change_entry = {prepaid: 0};
+      // set all fruits to 0
+      var all_fruits = Fruits.find({});
+      all_fruits.forEach(function(fruit_item){
+        change_entry[fruit_item.name] = 0;
+      });
+      // update the entry
+      Players.update(Session.get("selected_player"), {$set: change_entry});
     },
     'click input.actv': function () {
       Players.update(Session.get("selected_player"), {$inc: {active: 1}})

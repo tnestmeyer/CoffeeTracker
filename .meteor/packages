@@ -19,8 +19,5 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 
 autopublish             # Publish all data to the clients (for prototyping)
 insecure                # Allow all DB writes from clients (for prototyping)
-xcv58:collection-api
 iron:router
-kadira:blaze-layout
 session
-simple:rest
