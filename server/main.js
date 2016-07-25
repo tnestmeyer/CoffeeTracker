@@ -1,10 +1,11 @@
 Meteor.startup(function () {
   if (Fruits.find().count() === 0) {
-    Fruits.insert({name: 'Apple', price: 0.50});
+    // Fruits.insert({name: 'Apple', price: 0.50});
     Fruits.insert({name: 'Apricot', price: 0.50});
     Fruits.insert({name: 'Banana', price: 0.65});
     Fruits.insert({name: 'Kiwi', price: 0.75});
-    Fruits.insert({name: 'Nectarine', price: 0.50});
+    // Fruits.insert({name: 'Nectarine', price: 0.90});
+    Fruits.insert({name: 'Peach', price: 0.90});
   };
 
   if (Players.find().count() === 0) {

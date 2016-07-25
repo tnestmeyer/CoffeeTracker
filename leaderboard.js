@@ -46,7 +46,33 @@ if (Meteor.isClient) {
     player_exists: function(name) {
       // console.log('check if player exists')
       return Players.findOne({name: name});
-    }
+    },
+
+    valid_fruit_name: function (name) {
+      this.clear();
+      if (name.length == 0) {
+        this.set_error("Fruit name can't be blank");
+        return false;
+      } else if (this.fruit_exists(name)) {
+        this.set_error("Fruit already exists");
+        return false;
+      } else {
+        return true;
+      }
+    },
+    fruit_exists: function(name) {
+      // console.log('check if fruit exists')
+      return Fruits.findOne({name: name});
+    },
+    valid_fruit_price: function (price) {
+      this.clear();
+      if (price.length == 0) {
+        this.set_error("Price can't be blank");
+        return false;
+      } else {
+        return true;
+      }
+    },
   };
 
   Pricing = {
@@ -97,6 +123,11 @@ if (Meteor.isClient) {
     players: function () {
       // console.log('Template.Admin.helpers players was called');
       return Players.find( {}, {sort: {total: -1, name: 1}});
+    },
+
+    fruits: function () {
+      // console.log('Template.Admin.helpers fruits was called');
+      return Fruits.find({});
     },
 
     totalsum: function () {
@@ -268,5 +299,38 @@ if (Meteor.isClient) {
     },
 
   });
+
+  Template.change_fruit_price.events({
+    'click input.change_fruit_price_button': function (event) {
+      console.log('Template.change_fruit_price.events click input.change_fruit_price_button called')
+      var fruit_item = event['target'].value.split(" ")[3]
+      var price = document.getElementById("new_fruit_price").value;
+      // console.log(event)
+      // console.log(fruit_item)
+      // console.log(price)
+
+      var id = Fruits.findOne({'name': fruit_item})['_id']
+      // console.log(id)
+      if (Validation.valid_fruit_price(price)) {
+        Fruits.update(id, {$set: {'price': parseFloat(price)}});
+      }
+    },
+  })
+
+  Template.new_fruit.events({
+    'click input.new_fruit_button': function (event) {
+      console.log('Template.new_fruit.events click input.new_fruit_button called')
+      var name = document.getElementById("new_fruit_name").value.trim();
+      var price = document.getElementById("new_fruit_price").value;
+      // console.log(event)
+      // console.log(fruit_item)
+      // console.log(price)
+      if (Validation.valid_fruit_name(name)) {
+        if (Validation.valid_fruit_price(price)) {
+          Fruits.insert({'name': name, 'price': parseFloat(price)});
+        }
+      }
+    },
+  })
 
 }
