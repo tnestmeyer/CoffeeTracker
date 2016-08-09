@@ -360,6 +360,11 @@ if (Meteor.isClient) {
       var fruit_item = event['target'].value.split(" ")[1];
       // console.log(event)
       // console.log(fruit_item)
+      // get the fruit price and show a message, so you can easily add the fruit again when accidentally removing it
+      var fruit_price = Fruits.findOne({'name': fruit_item})['price']
+      Validation.set_error_fruit("Removed fruit " + fruit_item + " with price " + fruit_price)
+
+      // now remove the fruit:
       var id = Fruits.findOne({'name': fruit_item})['_id']
       // console.log(id)
       Fruits.remove(id);
