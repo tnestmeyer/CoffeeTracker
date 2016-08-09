@@ -142,3 +142,7 @@ h1 {
 .cleartab {
     cursor: pointer;
 }
+
+.error_fruit{
+  font-size: 0.5em;
+}

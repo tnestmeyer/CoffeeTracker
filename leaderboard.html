@@ -54,7 +54,9 @@
   {{#each fruits}}
   {{> change_fruit_price}}
   {{/each}}
-  {{> new_fruit}}
+  <div class="span6">
+    {{> new_fruit}}
+  </div>
   {{/contentFor}}
 
   {{#contentFor "adminStats"}}
@@ -64,7 +66,7 @@
   {{/contentFor}}
 
   {{#contentFor "leaderboardHeader"}}
-  <div class="span11">
+  <div class="span12">
     <div class="span2">
       <span class="title">Frugivore</span>
     </div>
@@ -92,17 +94,22 @@
     <div class="span1">
       <span class="title">Pe</span>
     </div>
+    <div class="span1">
+      <span class="title">Pl</span>
+    </div>
   </div>
   {{/contentFor}}
 
   {{#contentFor "buttons"}}
   <br>
-  <div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Clear tab (€{{selected_tab}})" /></div>
+  <div class="cleartabbutton"><input type="button" class="cleartab btn btn-danger" value="Freeze tab (€{{selected_tab}})" /></div>
   <div class="plusbutton"><input type="button" class="actv btn btn-large" value="Toggle Active" /></div>
   <div class="plusbutton"><input type="button" class="inc_prepaid_val1 btn btn-large" value="+1 Euro Pre-Paid" /></div>
   <div class="plusbutton"><input type="button" class="dec_prepaid_val1 btn btn-large" value="-1 Euro Pre-Paid" /></div>
   <div class="plusbutton"><input type="button" class="inc_prepaid_val2 btn btn-large" value="+5 Euro Pre-Paid" /></div>
   <div class="plusbutton"><input type="button" class="dec_prepaid_val2 btn btn-large" value="-5 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="inc_prepaid_val3 btn btn-large" value="+0.05 Euro Pre-Paid" /></div>
+  <div class="plusbutton"><input type="button" class="dec_prepaid_val3 btn btn-large" value="-0.05 Euro Pre-Paid" /></div>
   {{/contentFor}}
 
   {{#contentFor "playerlist"}}
@@ -198,6 +205,9 @@
     <div class="span1">
       <p class="tab_fruit">{{Peach}}</p>
     </div>
+    <div class="span1">
+      <p class="tab_fruit">{{Plum}}</p>
+    </div>
   </div>
 </template>
 
@@ -209,7 +219,7 @@
     <input type="button" class="add btn btn-small btn-warning" value="Add" />
   </div>
   {{#if error}}
-  <div id="error" class="alert span4 bump">
+  <div id="error_player" class="alert span4 bump">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <strong>Warning!</strong> {{error}}.
   </div>
@@ -220,31 +230,26 @@
 <template name="change_fruit_price">
   <div class="row">
     <div class="change_fruit_price span6">
-    <!-- <input type="text" id="change_fruit_price_input" class="input-medium span2"  placeholder="{{price}}" /> -->
-    <input type="button" class="change_fruit_price_button btn btn-small btn-warning span4" value="Change price of {{name}}" />
-  </div>
-  {{#if error}}
-  <div id="error" class="alert span4 bump">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <strong>Warning!</strong> {{error}}.
-  </div>
-  {{/if}}
+      <!-- <input type="text" id="change_fruit_price_input" class="input-medium span2"  placeholder="{{price}}" /> -->
+      <input type="button" class="change_fruit_price_button btn btn-small btn-warning span4" value="Change price of {{name}}" />
+      <input type="button" class="remove_fruit_button btn btn-small btn-warning span2" value="Remove {{name}}" />
+    </div>
   </div>
 </template>
 
 <template name="new_fruit">
   <div class="row">
     <div class="new_fruit span6">
-    <input type="text" id="new_fruit_price" class="input-medium span2"  placeholder="Price" />
-    <input type="text" id="new_fruit_name" class="input-medium span2"  placeholder="Fruit" />
-    <input type="button" class="new_fruit_button btn btn-small btn-warning span2" value="Set new price" />
-  </div>
-  {{#if error}}
-  <div id="error" class="alert span4 bump">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <strong>Warning!</strong> {{error}}.
-  </div>
-  {{/if}}
+      <input type="text" id="new_fruit_price" class="input-medium span2"  placeholder="Price" />
+      <input type="text" id="new_fruit_name" class="input-medium span2"  placeholder="Fruit" />
+      <input type="button" class="new_fruit_button btn btn-small btn-warning span2" value="Set new price" />
+    </div>
+    {{#if error}}
+    <div id="error_fruit" class="alert span6 bump error_fruit">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Warning!</strong> {{error}}.
+    </div>
+    {{/if}}
   </div>
 </template>
 

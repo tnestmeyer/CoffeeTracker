@@ -25,19 +25,19 @@ prepaid_price = 1.0
 if (Meteor.isClient) {
 
   Validation = {
-    clear: function () {
-      return Session.set("error", undefined);
+    clear_error_player: function () {
+      return Session.set("error_player", undefined);
     },
-    set_error: function (message) {
-      return Session.set("error", message);
+    set_error_player: function (message) {
+      return Session.set("error_player", message);
     },
     valid_name: function (name) {
-      this.clear();
+      this.clear_error_player();
       if (name.length == 0) {
-        this.set_error("Person's name can't be blank");
+        this.set_error_player("Person's name can't be blank");
         return false;
       } else if (this.player_exists(name)) {
-        this.set_error("Person already exists");
+        this.set_error_player("Person already exists");
         return false;
       } else {
         return true;
@@ -48,13 +48,19 @@ if (Meteor.isClient) {
       return Players.findOne({name: name});
     },
 
+    clear_error_fruit: function () {
+      return Session.set("error_fruit", undefined);
+    },
+    set_error_fruit: function (message) {
+      return Session.set("error_fruit", message);
+    },
     valid_fruit_name: function (name) {
-      this.clear();
+      this.clear_error_fruit();
       if (name.length == 0) {
-        this.set_error("Fruit name can't be blank");
+        this.set_error_fruit("Fruit name can't be blank");
         return false;
       } else if (this.fruit_exists(name)) {
-        this.set_error("Fruit already exists");
+        this.set_error_fruit("Fruit already exists");
         return false;
       } else {
         return true;
@@ -65,12 +71,17 @@ if (Meteor.isClient) {
       return Fruits.findOne({name: name});
     },
     valid_fruit_price: function (price) {
-      this.clear();
+      this.clear_error_fruit();
       if (price.length == 0) {
-        this.set_error("Price can't be blank");
+        this.set_error_fruit("Price can't be blank");
         return false;
       } else {
-        return true;
+        if (!isFinite(parseFloat(price))) {
+          this.set_error_fruit("Price is not a number (did you mix up the boxes? left: price, right: fruit)");
+          return false;
+        } else {
+          return true;
+        }
       }
     },
   };
@@ -170,6 +181,13 @@ if (Meteor.isClient) {
       return s;
     },
 
+    selected_tab: function () {
+      // console.log('Template.Admin.helpers selected_tab was called');
+      var player = Players.findOne(Session.get("selected_player"));
+      var tab = Pricing.player_tab(player);
+      return player && tab.toFixed(2);
+    },
+
   });
 
 
@@ -212,7 +230,7 @@ if (Meteor.isClient) {
   Template.newplayer.helpers({
     error: function () {
       // console.log('Template.newplayer.helpers error was called')
-      return Session.get("error");
+      return Session.get("error_player");
     },
 
   });
@@ -238,7 +256,7 @@ if (Meteor.isClient) {
 
   Template.leaderboard.events = {
     'click input.inc_fruit': function (event) {
-      var fruit_item = event['target'].value.split(" ")[0]
+      var fruit_item = event['target'].value.split(" ")[0];
       // console.log('inc_fruit called with')
       // console.log(fruit_item)
 
@@ -264,16 +282,29 @@ if (Meteor.isClient) {
     'click input.dec_prepaid_val2': function () {
       Players.update(Session.get("selected_player"), {$inc: {prepaid: -5, total: 0}});
     },
-    'click input.cleartab': function () {
+    'click input.inc_prepaid_val3': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: 0.05, total: 0}});
+    },
+    'click input.dec_prepaid_val3': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: -0.05, total: 0}});
+    },
+    'click input.cleartab': function (event) {
       // console.log('clear tab called')
-      var change_entry = {prepaid: 0};
-      // set all fruits to 0
-      var all_fruits = Fruits.find({});
-      all_fruits.forEach(function(fruit_item){
-        change_entry[fruit_item.name] = 0;
-      });
-      // update the entry
-      Players.update(Session.get("selected_player"), {$set: change_entry});
+      var selected_tab = -1 * parseFloat(event['target'].value.split("(€")[1].split(")")[0]);
+      // console.log(selected_tab)
+      if (Validation.valid_fruit_price(selected_tab)) {
+        var change_entry = {prepaid: selected_tab};
+        // set all fruits to 0
+        var all_fruits = Fruits.find({});
+        all_fruits.forEach(function(fruit_item){
+          change_entry[fruit_item.name] = 0;
+        });
+        // update the entry
+        Players.update(Session.get("selected_player"), {$set: change_entry});
+      }
+      else {
+        Validation.set_error("Freezing Tab was not possible");
+      }
     },
     'click input.actv': function () {
       Players.update(Session.get("selected_player"), {$inc: {active: 1}})
@@ -300,10 +331,18 @@ if (Meteor.isClient) {
 
   });
 
+  Template.change_fruit_price.helpers({
+    error: function () {
+      // console.log('Template.change_fruit_price.helpers error was called')
+      return Session.get("error_fruit");
+    },
+
+  });
+
   Template.change_fruit_price.events({
     'click input.change_fruit_price_button': function (event) {
-      console.log('Template.change_fruit_price.events click input.change_fruit_price_button called')
-      var fruit_item = event['target'].value.split(" ")[3]
+      // console.log('Template.change_fruit_price.events click input.change_fruit_price_button called')
+      var fruit_item = event['target'].value.split(" ")[3];
       var price = document.getElementById("new_fruit_price").value;
       // console.log(event)
       // console.log(fruit_item)
@@ -315,11 +354,29 @@ if (Meteor.isClient) {
         Fruits.update(id, {$set: {'price': parseFloat(price)}});
       }
     },
+
+    'click input.remove_fruit_button': function (event) {
+      // console.log('Template.change_fruit_price.events click input.remove_fruit_button called')
+      var fruit_item = event['target'].value.split(" ")[1];
+      // console.log(event)
+      // console.log(fruit_item)
+      var id = Fruits.findOne({'name': fruit_item})['_id']
+      // console.log(id)
+      Fruits.remove(id);
+    },
   })
+
+  Template.new_fruit.helpers({
+    error: function () {
+      // console.log('Template.new_fruit.helpers error was called')
+      return Session.get("error_fruit");
+    },
+
+  });
 
   Template.new_fruit.events({
     'click input.new_fruit_button': function (event) {
-      console.log('Template.new_fruit.events click input.new_fruit_button called')
+      // console.log('Template.new_fruit.events click input.new_fruit_button called')
       var name = document.getElementById("new_fruit_name").value.trim();
       var price = document.getElementById("new_fruit_price").value;
       // console.log(event)
