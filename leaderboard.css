@@ -84,6 +84,16 @@ h1 {
     display: inline;
 }
 
+.button_fruit_active {
+    display: inline;
+    color: #0f0;
+}
+
+.button_fruit_inactive {
+    display: inline;
+    color: #f00;
+}
+
 
 .player .tab_fruit {
     font-size: 2em;

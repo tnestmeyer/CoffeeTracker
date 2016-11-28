@@ -88,14 +88,15 @@ if (Meteor.isClient) {
 
   Pricing = {
     player_tab: function(Player) {
-      var sum = -prepaid_price * Player.prepaid;
-      Fruits.find({}).forEach(function(fruit_item){
-        amount = Player[fruit_item.name];
-        if (amount)
-          sum += fruit_item.price * amount;
-        // sum += fruit_item.price * amount;
-      })
-      return sum;
+      // var sum = -prepaid_price * Player.prepaid;
+      // Fruits.find({}).forEach(function(fruit_item){
+      //   amount = Player[fruit_item.name];
+      //   if (amount)
+      //     sum += fruit_item.price * amount;
+      //   // sum += fruit_item.price * amount;
+      // })
+      // return sum;
+      return Player.tab;
     },
   };
 
@@ -120,12 +121,12 @@ if (Meteor.isClient) {
   Template.Players.helpers({
     players_active: function () {
       // console.log('Template.Players.helpers players_active was called');
-      return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, name: 1}});
+      return Players.find({active: { '$mod' : [2,1]}}, {sort: {total: -1, tab: 1, name: 1}});
     },
 
-    fruits: function () {
-      // console.log('Template.Players.helpers fruits was called');
-      return Fruits.find();
+    fruits_active: function () {
+      // console.log('Template.Players.helpers fruits_active was called');
+      return Fruits.find({active: true}, {sort: {name: 1}});
     },
 
   });
@@ -133,15 +134,15 @@ if (Meteor.isClient) {
   Template.Admin.helpers({
     players: function () {
       // console.log('Template.Admin.helpers players was called');
-      return Players.find( {}, {sort: {total: -1, name: 1}});
+      return Players.find( {}, {sort: {tab: -1, total: -1, name: 1}});
     },
 
     fruits: function () {
       // console.log('Template.Admin.helpers fruits was called');
-      return Fruits.find({});
+      return Fruits.find({}, {sort: {name: 1}});
     },
 
-    totalsum: function () {
+    totalowed: function () {
       // console.log('Template.Admin.helpers totalsum');
       var all_players = Players.find({});
       var sum = 0;
@@ -161,25 +162,26 @@ if (Meteor.isClient) {
       return sum.toFixed(2);
     },
 
-    totalowed: function () {
-      // console.log('Template.Admin.helpers totalowed');
+    totalsum: function () {
+      // console.log('Template.Admin.helpers totalprepay');
       var all_players = Players.find({});
       var sum = 0;
       all_players.forEach(function(Player){
-        sum += Math.max( 0, Pricing.player_tab(Player));
+        sum += Pricing.player_tab(Player)
+        sum += (prepaid_price * Player.prepaid);
       });
       return sum.toFixed(2);
     },
 
-    fruit_prices: function () {
-      // console.log('Template.Admin.helpers fruit_prices');
-      var all_fruits = Fruits.find({});
-      var s = "";
-      all_fruits.forEach(function(fruit_item){
-        s += fruit_item.name + " " + fruit_item.price + "   ";
-      });
-      return s;
-    },
+    // fruit_prices: function () {
+    //   // console.log('Template.Admin.helpers fruit_prices');
+    //   var all_fruits = Fruits.find({});
+    //   var s = "";
+    //   all_fruits.forEach(function(fruit_item){
+    //     s += fruit_item.name + " " + fruit_item.price + "   ";
+    //   });
+    //   return s;
+    // },
 
     selected_tab: function () {
       // console.log('Template.Admin.helpers selected_tab was called');
@@ -225,6 +227,11 @@ if (Meteor.isClient) {
       return ((this.active % 2)==0)  ? "notactv" : '';
     },
 
+    formatted_price: function (price) {
+      // console.log('Template.fruit.helpers formatted_price was called');
+      return price.toFixed(2);
+    },
+
   });
 
   Template.newplayer.helpers({
@@ -241,7 +248,7 @@ if (Meteor.isClient) {
       var newplayer = document.getElementById("newplayer").value.trim();
       if (Validation.valid_name(newplayer)) {
         // set the main fields
-        var entry = {name: newplayer, prepaid: 0, total: 0, active: 1};
+        var entry = {name: newplayer, prepaid: 0, tab: 0, total: 0, active: 1};
         // set all fruits to 0
         var all_fruits = Fruits.find({});
         all_fruits.forEach(function(fruit_item){
@@ -257,6 +264,7 @@ if (Meteor.isClient) {
   Template.leaderboard.events = {
     'click input.inc_fruit': function (event) {
       var fruit_item = event['target'].value.split(" ")[0];
+      var chosen_fruit = Fruits.findOne({'name': fruit_item})
       // console.log('inc_fruit called with')
       // console.log(fruit_item)
 
@@ -264,47 +272,50 @@ if (Meteor.isClient) {
       // Players.update(Session.get("selected_player"), {$inc: {fruit_item: 1, total: 1}});
 
       // but works by explicitly creating the dictionary
-      dict = {"total": 1}
+      dict = {"total": 1, "tab": chosen_fruit['price']}
       dict[fruit_item] = 1
       // console.log(dict)
       Players.update(Session.get("selected_player"), {$inc: dict});
+      Fruits.update(chosen_fruit["_id"], {$inc: {'eaten': 1}});
     },
 
-    'click input.inc_prepaid_val1': function () {
-      Players.update(Session.get("selected_player"), {$inc: {prepaid: 1, total: 0}});
-    },
     'click input.dec_prepaid_val1': function () {
-      Players.update(Session.get("selected_player"), {$inc: {prepaid: -1, total: 0}});
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: -1, tab: 1}});
     },
-    'click input.inc_prepaid_val2': function () {
-      Players.update(Session.get("selected_player"), {$inc: {prepaid: 5, total: 0}});
+    'click input.inc_prepaid_val1': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: 1, tab: -1}});
     },
     'click input.dec_prepaid_val2': function () {
-      Players.update(Session.get("selected_player"), {$inc: {prepaid: -5, total: 0}});
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: -5, tab: 5}});
     },
-    'click input.inc_prepaid_val3': function () {
-      Players.update(Session.get("selected_player"), {$inc: {prepaid: 0.05, total: 0}});
+    'click input.inc_prepaid_val2': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: 5, tab: -5}});
     },
     'click input.dec_prepaid_val3': function () {
-      Players.update(Session.get("selected_player"), {$inc: {prepaid: -0.05, total: 0}});
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: -0.05, tab: 0.05}});
+    },
+    'click input.inc_prepaid_val3': function () {
+      Players.update(Session.get("selected_player"), {$inc: {prepaid: 0.05, tab: -0.05}});
+    },
+    'click input.inc_total': function () {
+      Players.update(Session.get("selected_player"), {$inc: {total: 1}});
+    },
+    'click input.dec_total': function () {
+      Players.update(Session.get("selected_player"), {$inc: {total: -1}});
+    },
+    'click input.dec_tab': function () {
+      Players.update(Session.get("selected_player"), {$inc: {tab: -0.05}});
     },
     'click input.cleartab': function (event) {
       // console.log('clear tab called')
-      var selected_tab = -1 * parseFloat(event['target'].value.split("(€")[1].split(")")[0]);
-      // console.log(selected_tab)
-      if (Validation.valid_fruit_price(selected_tab)) {
-        var change_entry = {prepaid: selected_tab};
-        // set all fruits to 0
-        var all_fruits = Fruits.find({});
-        all_fruits.forEach(function(fruit_item){
-          change_entry[fruit_item.name] = 0;
-        });
-        // update the entry
-        Players.update(Session.get("selected_player"), {$set: change_entry});
-      }
-      else {
-        Validation.set_error("Freezing Tab was not possible");
-      }
+      var change_entry = {};
+      // set all fruits to 0
+      var all_fruits = Fruits.find({});
+      all_fruits.forEach(function(fruit_item){
+        change_entry[fruit_item.name] = 0;
+      });
+      // update the entry
+      Players.update(Session.get("selected_player"), {$set: change_entry});
     },
     'click input.actv': function () {
       Players.update(Session.get("selected_player"), {$inc: {active: 1}})
@@ -332,11 +343,20 @@ if (Meteor.isClient) {
   });
 
   Template.change_fruit_price.helpers({
+    formatted_price: function (price) {
+      // console.log('Template.change_fruit_price.helpers formatted_price was called');
+      return price.toFixed(2);
+    },
+
     error: function () {
       // console.log('Template.change_fruit_price.helpers error was called')
       return Session.get("error_fruit");
     },
 
+    active: function (fruit_item) {
+      // console.log('Template.change_fruit_price.helpers active was called')
+      return Fruits.findOne({'name': fruit_item})['active'];
+    },
   });
 
   Template.change_fruit_price.events({
@@ -369,6 +389,22 @@ if (Meteor.isClient) {
       // console.log(id)
       Fruits.remove(id);
     },
+
+    'click input.toggle_active_fruit_button': function (event) {
+      // console.log('Template.change_fruit_price.events click input.toggle_active_fruit_button called')
+      var fruit_item = event['target'].value.split(" ")[2];
+      var id = Fruits.findOne({'name': fruit_item})['_id'];
+      var active = Fruits.findOne({'name': fruit_item})['active'];
+      // console.log(id)
+      if (active) {
+        // console.log("was active")
+        event['target'].style.color = 'red'
+        Fruits.update(id, {$set: {'active': false}});
+      } else {
+        event['target'].style.color = 'green'
+        Fruits.update(id, {$set: {'active': true}});
+      }
+    },
   })
 
   Template.new_fruit.helpers({
@@ -389,10 +425,21 @@ if (Meteor.isClient) {
       // console.log(price)
       if (Validation.valid_fruit_name(name)) {
         if (Validation.valid_fruit_price(price)) {
-          Fruits.insert({'name': name, 'price': parseFloat(price)});
+          Fruits.insert({'name': name, 'price': parseFloat(price), 'active': true});
         }
       }
     },
+
+    'click input.clear_eaten_button': function (event) {
+      // console.log('Template.new_fruit.events click input.clear_eaten_button called')
+      var all_fruits = Fruits.find({});
+      all_fruits.forEach(function(fruit_item){
+        // console.log(fruit_item)
+        var id = Fruits.findOne({'name': fruit_item['name']})['_id'];
+        Fruits.update(id, {$set: {'eaten': 0}});
+      });      
+    },
+
   })
 
 }
