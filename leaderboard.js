@@ -15,7 +15,7 @@ Router.configure({
 
 Router.map(function() {
 	this.route('players', {path: '/'  });
-	this.route('admin', {template: 'Admin',  path: '/admin'  });
+	this.route('admin', {template: 'Admin',  path: '/admin1100101AccessPage'  });
     });
 
 
@@ -189,6 +189,27 @@ if (Meteor.isClient) {
       var tab = Pricing.player_tab(player);
       return player && tab.toFixed(2);
     },
+
+    full_db_state: function() {
+      // console.log(Fruits.find({}));
+      // console.log(Players.find({}));
+      var out = "Full database dump:\n";
+
+      out += "\nFruits:\n";
+      var all_fruits = Fruits.find({});
+      all_fruits.forEach(function(Fruit){
+        out += JSON.stringify(Fruit) + "\n";
+      });
+
+      out += "\nPlayers:\n";
+
+      var all_players = Players.find({});
+      all_players.forEach(function(Player){
+        out += JSON.stringify(Player) + "\n";
+      });
+
+      return out;
+    }
 
   });
 
