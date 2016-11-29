@@ -34,10 +34,10 @@ if (Meteor.isClient) {
     valid_name: function (name) {
       this.clear_error_player();
       if (name.length == 0) {
-        this.set_error_player("Person's name can't be blank");
+        this.set_error_player("Warning! A person's name can't be blank!");
         return false;
       } else if (this.player_exists(name)) {
-        this.set_error_player("Person already exists");
+        this.set_error_player("Warning! This person already exists!");
         return false;
       } else {
         return true;
@@ -105,6 +105,12 @@ if (Meteor.isClient) {
     selected_name: function () {
       // console.log('Template.leaderboard.helpers selected_name was called');
       var player = Players.findOne(Session.get("selected_player"));
+      if (player && player["tab"] > 10) {
+        Validation.set_error_player("Please go to Thomas and give him money!");
+      }
+      else {
+        Validation.clear_error_player();
+      }
       return player && player.name;
     },
 
@@ -172,16 +178,6 @@ if (Meteor.isClient) {
       });
       return sum.toFixed(2);
     },
-
-    // fruit_prices: function () {
-    //   // console.log('Template.Admin.helpers fruit_prices');
-    //   var all_fruits = Fruits.find({});
-    //   var s = "";
-    //   all_fruits.forEach(function(fruit_item){
-    //     s += fruit_item.name + " " + fruit_item.price + "   ";
-    //   });
-    //   return s;
-    // },
 
     selected_tab: function () {
       // console.log('Template.Admin.helpers selected_tab was called');
