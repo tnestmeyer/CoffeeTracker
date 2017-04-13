@@ -6,6 +6,7 @@ import { Template } from 'meteor/templating';
 
 Players = new Meteor.Collection("players");
 Fruits = new Meteor.Collection("fruits");
+Logs = new Meteor.Collection("logs");
 
 
 Router.configure({
@@ -20,7 +21,12 @@ Router.map(function() {
 
 
 
-prepaid_price = 1.0
+prepaid_price = 1.0;
+
+formatted_price = function (price) {
+  return price.toFixed(2);
+};
+
 
 if (Meteor.isClient) {
 
@@ -98,6 +104,17 @@ if (Meteor.isClient) {
       // return sum;
       return Player.tab;
     },
+
+    current_week: function() {
+      var sum = 0;
+      Fruits.find({}).forEach(function(fruit_item){
+        amount = fruit_item['eaten'];
+        if (amount)
+          sum += fruit_item['price'] * amount;
+      })
+      // return sum;
+      return formatted_price(sum);
+    },
   };
 
   // helpers (Templates should use helpers now)
@@ -118,7 +135,8 @@ if (Meteor.isClient) {
       // console.log('Template.leaderboard.helpers selected_tab was called');
       var player = Players.findOne(Session.get("selected_player"));
       var tab = Pricing.player_tab(player);
-      return player && tab.toFixed(2);
+      // return player && tab.toFixed(2);
+      return player && formatted_price(tab);
     },
 
   });
@@ -149,13 +167,14 @@ if (Meteor.isClient) {
     },
 
     totalowed: function () {
-      // console.log('Template.Admin.helpers totalsum');
+      // console.log('Template.Admin.helpers totalowed');
       var all_players = Players.find({});
       var sum = 0;
       all_players.forEach(function(Player){
         sum += Pricing.player_tab(Player)
       });
-      return sum.toFixed(2);
+      // return sum.toFixed(2);
+      return formatted_price(sum);
     },
 
     totalprepay: function () {
@@ -165,44 +184,69 @@ if (Meteor.isClient) {
       all_players.forEach(function(Player){
         sum += (prepaid_price * Player.prepaid);
       });
-      return sum.toFixed(2);
+      // return sum.toFixed(2);
+      return formatted_price(sum);
     },
 
     totalsum: function () {
-      // console.log('Template.Admin.helpers totalprepay');
+      // console.log('Template.Admin.helpers totalsum');
       var all_players = Players.find({});
       var sum = 0;
       all_players.forEach(function(Player){
         sum += Pricing.player_tab(Player)
         sum += (prepaid_price * Player.prepaid);
       });
-      return sum.toFixed(2);
+      // return sum.toFixed(2);
+      return formatted_price(sum);
+    },
+
+    currentweek: function () {
+      // console.log('Template.Admin.helpers currentweek');
+      return Pricing.current_week();
     },
 
     selected_tab: function () {
       // console.log('Template.Admin.helpers selected_tab was called');
       var player = Players.findOne(Session.get("selected_player"));
       var tab = Pricing.player_tab(player);
-      return player && tab.toFixed(2);
+      // return player && tab.toFixed(2);
+      return player && formatted_price(tab);
     },
 
     full_db_state: function() {
       // console.log(Fruits.find({}));
       // console.log(Players.find({}));
-      var out = "Full database dump:\n";
+      var out = "\n";
 
-      out += "\nFruits:\n";
+      out += "\nFruits = [\n";
       var all_fruits = Fruits.find({});
       all_fruits.forEach(function(Fruit){
-        out += JSON.stringify(Fruit) + "\n";
+        out += JSON.stringify(Fruit) + ",\n";
       });
+      out += "];\n"
 
-      out += "\nPlayers:\n";
+      out += "\nPlayers = [\n";
 
       var all_players = Players.find({});
       all_players.forEach(function(Player){
-        out += JSON.stringify(Player) + "\n";
+        out += JSON.stringify(Player) + ",\n";
       });
+      out += "];\n"
+
+      out += "\nLogs = [\n";
+
+
+      var limit = 50
+      var options = {
+          "limit": limit,
+          "skip": Logs.find({}).count() - limit,
+          // "sort": "_id"
+      }
+      var all_logs = Logs.find({}, options);  // only show part of it!
+      all_logs.forEach(function(Log){
+        out += JSON.stringify(Log) + ",\n";
+      });
+      out += "];\n"
 
       return out;
     }
@@ -246,7 +290,8 @@ if (Meteor.isClient) {
 
     formatted_price: function (price) {
       // console.log('Template.fruit.helpers formatted_price was called');
-      return price.toFixed(2);
+      // return price.toFixed(2);
+      return formatted_price(price);
     },
 
   });
@@ -294,6 +339,16 @@ if (Meteor.isClient) {
       // console.log(dict)
       Players.update(Session.get("selected_player"), {$inc: dict});
       Fruits.update(chosen_fruit["_id"], {$inc: {'eaten': 1}});
+
+      // log the acitivity
+      var date = new Date()  // get current date/time
+      // console.log(date.toString())
+      // console.log(date.toJSON())
+      // console.log(date.toLocaleString())
+      Logs.insert({'player': Players.findOne({'_id': Session.get("selected_player")})['name'], 'fruit': chosen_fruit['name'], 'price': chosen_fruit['price'], 'data': date.toLocaleString()});
+
+      // unselect the current player to avoid someone adding his/her fruit to the last user
+      Session.set("selected_player", undefined);
     },
 
     'click input.dec_prepaid_val1': function () {
@@ -354,7 +409,8 @@ if (Meteor.isClient) {
   Template.fruit.helpers({
     formatted_price: function (price) {
       // console.log('Template.fruit.helpers formatted_price was called');
-      return price.toFixed(2);
+      // return price.toFixed(2);
+      return formatted_price(price);
     },
 
   });
@@ -362,7 +418,8 @@ if (Meteor.isClient) {
   Template.change_fruit_price.helpers({
     formatted_price: function (price) {
       // console.log('Template.change_fruit_price.helpers formatted_price was called');
-      return price.toFixed(2);
+      // return price.toFixed(2);
+      return formatted_price(price);
     },
 
     error: function () {

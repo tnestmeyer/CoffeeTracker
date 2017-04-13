@@ -63,6 +63,7 @@
   <h2>Total sum of money owed: €{{totalowed}}</h2>
   <h2>Total sum of money received: €{{totalprepay}}</h2>
   <h2>(Unrealized) income with FruitBox: €{{totalsum}}</h2>
+  <h2>Current weak (since clicking 'clear eaten counter'): €{{currentweek}}</h2>
   {{/contentFor}}
 
   {{#contentFor "leaderboardHeader"}}
@@ -73,24 +74,24 @@
     <div class="span1">
       <span class="title">Tot.</span>
     </div>
-    <div class="span1">
+    <div class="span2">
       <span class="title">Tab</span>
     </div>
-    <div class="span1">
+    <div class="span2">
       <span class="title">Paid</span>
     </div>
     <div class="span1">
       <span class="title">Apl</span>
     </div>
-    <div class="span1">
+<!--     <div class="span1">
       <span class="title">Apr</span>
-    </div>
+    </div> -->
     <div class="span1">
       <span class="title">Ba</span>
     </div>
-    <div class="span1">
+<!--     <div class="span1">
       <span class="title">Cl</span>
-    </div>
+    </div> -->
     <div class="span1">
       <span class="title">Ki</span>
     </div>
@@ -103,10 +104,10 @@
     <div class="span1">
       <span class="title">Pear</span>
     </div>
-    <div class="span1">
+<!--     <div class="span1">
       <span class="title">Pl</span>
     </div>
-<!--     <div class="span1">
+    <div class="span1">
       <span class="title">Ca</span>
     </div>
     <div class="span1">
@@ -137,11 +138,11 @@
   {{/contentFor}}
 
   <div class="span12">
-    <p class="text">
-      <pre>
+    <input type="text" value={{full_db_state}} />
+    <div class="db_dump">
+        Full database dump:
         {{full_db_state}}
-      </pre>
-    </p>
+    </div>
   </div>
 
 </template>
@@ -210,24 +211,24 @@
     <div class="span1">
       <p class="total">{{total}}</p>
     </div>
-    <div class="span1">
+    <div class="span2">
       <p class="tab_prepaid">{{formatted_price tab}}</p>
     </div>
-    <div class="span1">
+    <div class="span2">
       <p class="tab_prepaid">{{formatted_price prepaid}}</p>
     </div>
     <div class="span1">
       <p class="tab_fruit">{{Apple}}</p>
     </div>
-    <div class="span1">
+<!--     <div class="span1">
       <p class="tab_fruit">{{Apricot}}</p>
-    </div>
+    </div> -->
     <div class="span1">
       <p class="tab_fruit">{{Banana}}</p>
     </div>
-    <div class="span1">
+<!--     <div class="span1">
       <p class="tab_fruit">{{Clementine}}</p>
-    </div>
+    </div> -->
     <div class="span1">
       <p class="tab_fruit">{{Kiwi}}</p>
     </div>
@@ -240,10 +241,10 @@
     <div class="span1">
       <p class="tab_fruit">{{Pear}}</p>
     </div>
-    <div class="span1">
+<!--     <div class="span1">
       <p class="tab_fruit">{{Plum}}</p>
     </div>
-<!--     <div class="span1">
+    <div class="span1">
       <p class="tab_fruit">{{Carrot}}</p>
     </div>
     <div class="span1">
