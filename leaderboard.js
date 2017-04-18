@@ -220,36 +220,38 @@ if (Meteor.isClient) {
 
       out += "\nFruits = [\n";
       var all_fruits = Fruits.find({});
-      all_fruits.forEach(function(Fruit){
-        out += JSON.stringify(Fruit) + ",\n";
+      all_fruits.forEach(function(fruit){
+        out += JSON.stringify(fruit) + ",\n";
       });
       out += "];\n"
+
 
       out += "\nPlayers = [\n";
 
       var all_players = Players.find({});
-      all_players.forEach(function(Player){
-        out += JSON.stringify(Player) + ",\n";
+      all_players.forEach(function(player){
+        out += JSON.stringify(player) + ",\n";
       });
       out += "];\n"
 
-      out += "\nLogs = [\n";
 
-
+      out += "\nLogs = [  // adding a formatted_date item which is not in DB\n";
       var limit = 50
-      var options = {
-          "limit": limit,
-          "skip": Logs.find({}).count() - limit,
-          // "sort": "_id"
-      }
-      var all_logs = Logs.find({}, options);  // only show part of it!
-      all_logs.forEach(function(Log){
-        out += JSON.stringify(Log) + ",\n";
+      // console.log(Logs.find({}).count())
+      var all_logs = Logs.find({}, {"sort": {"date": -1}, "limit": limit});
+      // var all_logs = Logs.find({});  // show all
+
+      all_logs.forEach(function(log){
+        // additionaly report formatted date
+        date = new Date(log["date"]);
+        log["formatted_date"] = date.toLocaleString();
+        // show all fields
+        out += JSON.stringify(log) + "\n";
       });
       out += "];\n"
 
       return out;
-    }
+    },
 
   });
 
@@ -341,11 +343,12 @@ if (Meteor.isClient) {
       Fruits.update(chosen_fruit["_id"], {$inc: {'eaten': 1}});
 
       // log the acitivity
-      var date = new Date()  // get current date/time
+      // var date = new Date()  // get current date/time
       // console.log(date.toString())
       // console.log(date.toJSON())
       // console.log(date.toLocaleString())
-      Logs.insert({'player': Players.findOne({'_id': Session.get("selected_player")})['name'], 'fruit': chosen_fruit['name'], 'price': chosen_fruit['price'], 'data': date.toLocaleString()});
+      // Logs.insert({'player': Players.findOne({'_id': Session.get("selected_player")})['name'], 'fruit': chosen_fruit['name'], 'price': chosen_fruit['price'], 'date': date.toLocaleString()});
+      Logs.insert({'player': Players.findOne({'_id': Session.get("selected_player")})['name'], 'fruit': chosen_fruit['name'], 'price': chosen_fruit['price'], 'date': Number(new Date())});
 
       // unselect the current player to avoid someone adding his/her fruit to the last user
       Session.set("selected_player", undefined);
